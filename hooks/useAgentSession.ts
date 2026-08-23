@@ -164,7 +164,9 @@ const PROMPT_SETTLE_INITIAL_DELAY_MS = 800;
 const PROMPT_SETTLE_POLL_MS = 600;
 const PROMPT_SETTLE_MAX_MS = 20_000;
 const EVENT_STREAM_IDLE_GRACE_MS = 30_000;
-const AGENT_STATE_RECONCILE_MS = 15_000;
+// Fork: 2s reconcile — WAF buffers SSE streams, so prompt settlement is
+// detected via polling instead of events. Cheap: one GET per 2s while running.
+const AGENT_STATE_RECONCILE_MS = 2_000;
 const BASH_STATE_RECONCILE_MS = 1_000;
 const EVENT_STREAM_READY_TIMEOUT_MS = 60_000;
 const EVENT_STREAM_RECONNECT_DELAY_MS = 1_000;
