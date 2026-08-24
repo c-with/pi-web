@@ -1336,7 +1336,9 @@ export function useAgentSession(opts: UseAgentSessionOptions) {
             await sendAgentCommand(sid, { type: "set_model", provider: selectedModel.provider, modelId: selectedModel.modelId });
           }
         }
-        await ensureEventsConnected(sid);
+        // Fork: SSE readiness is best-effort behind a buffering WAF — don't block
+        // the prompt POST on it; the 2s reconcile poll settles the UI instead.
+        await Promise.race([ensureEventsConnected(sid), new Promise((r) => setTimeout(r, 3000))]);
         promptRequestStarted = true;
         await sendAgentCommand(sid, {
           type: "prompt",
@@ -1346,7 +1348,7 @@ export function useAgentSession(opts: UseAgentSessionOptions) {
         promoteNewSession(1, message);
       } else if (session) {
         sentSessionId = session.id;
-        await ensureEventsConnected(session.id);
+        await Promise.race([ensureEventsConnected(session.id), new Promise((r) => setTimeout(r, 3000))]);
         promptRequestStarted = true;
         await sendAgentCommand(session.id, {
           type: "prompt",
