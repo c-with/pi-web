@@ -1,4 +1,5 @@
 import type { SessionCleanupPreviewResponse, SessionCleanupRequest } from "./api";
+import { t } from "./i18n/i18n";
 
 export interface SessionCleanupDraft {
   archiveIdleEnabled: boolean;
@@ -19,7 +20,7 @@ export const DEFAULT_SESSION_CLEANUP_DRAFT: SessionCleanupDraft = {
 };
 
 export function validateSessionCleanupDraft(draft: SessionCleanupDraft): SessionCleanupDraftValidation {
-  if (!draft.archiveIdleEnabled && !draft.deleteArchivedEnabled) return { ok: false, error: "Enable at least one cleanup action." };
+  if (!draft.archiveIdleEnabled && !draft.deleteArchivedEnabled) return { ok: false, error: t("Enable at least one cleanup action.") };
 
   const request: SessionCleanupRequest = {
     archiveIdleDays: null,

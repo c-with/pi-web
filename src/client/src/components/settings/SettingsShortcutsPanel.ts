@@ -84,7 +84,7 @@ export class SettingsShortcutsPanel extends LocalizedLitElement {
           <div class="config-path-card">
             <span>${t("Config file")}</span>
             <code>${this.configResponse?.path ?? t("Unknown")}</code>
-            <small>${t("Shortcut overrides are saved under")} <code>shortcuts</code>. A value of <code>null</code> disables the action shortcut.</small>
+            <small>${t("Shortcut overrides are saved under")} <code>shortcuts</code>${t(". A value of")} <code>null</code> ${t("disables the action shortcut.")}</small>
           </div>
           ${groups.length === 0 ? html`<div class="loading-card">${t("No actions registered.")}</div>` : groups.map((group) => html`
             <section class="shortcut-group">

@@ -1791,7 +1791,7 @@ export class PiWebApp extends LocalizedLitElement {
   private async runSessionCleanup(request: SessionCleanupRequest): Promise<void> {
     const dialog = this.sessionCleanupDialog;
     if (dialog?.preview === undefined || sessionCleanupRequestKey(dialog.previewRequest) !== sessionCleanupRequestKey(request)) {
-      this.sessionCleanupDialog = { ...(dialog ?? {}), error: "Preview cleanup before running it." };
+      this.sessionCleanupDialog = { ...(dialog ?? {}), error: t("Preview cleanup before running it.") };
       return;
     }
     const machineId = selectedMachineId(this.state);

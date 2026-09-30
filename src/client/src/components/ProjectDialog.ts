@@ -127,10 +127,10 @@ export class ProjectDialog extends LocalizedLitElement {
         <span>${t("Trust this project")}</span>
       </label>
       <small class="trust-hint">
-        Trusting lets pi load this project's .pi settings, extensions, skills, and packages.
+        ${t("Trusting lets pi load this project's .pi settings, extensions, skills, and packages.")}
         <a href="https://pi.dev/docs/latest/security" target="_blank" rel="noreferrer">${t("Learn about project trust")}</a>
       </small>
-      ${this.trust?.error === undefined ? null : html`<small class="trust-error">Trust state unavailable: ${this.trust.error}</small>`}
+      ${this.trust?.error === undefined ? null : html`<small class="trust-error">${t("Trust state unavailable: {error}", { error: this.trust.error })}</small>`}
     `;
   }
 
@@ -172,7 +172,7 @@ export class ProjectDialog extends LocalizedLitElement {
         <div class="body">
           <label>
             ${t("Project folder")}
-            <input .value=${this.path} @input=${(event: InputEvent) => { this.onPathInput(event); }} placeholder="/path/to/project or ~/code/project" />
+            <input .value=${this.path} @input=${(event: InputEvent) => { this.onPathInput(event); }} placeholder=${t("/path/to/project or ~/code/project")} />
           </label>
           <div class="suggestions">
             ${this.loading ? html`<div class="hint">${t("Loading folders…")}</div>` : null}

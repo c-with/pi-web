@@ -2,6 +2,7 @@ import { api as defaultApi, type AskUserCloseResponse, type AskUserSubmission, t
 import type { AppState, ClosedExtensionDialog } from "../appState";
 import { BrowserErrorReporter, sessionBrowserErrorScope, workspaceBrowserErrorScope, type SessionBrowserErrorOwner } from "../browserErrors";
 import { forgetCachedNewSession, isCachedNewSessionInfo, markCachedNewSessionInfo, mergeCachedNewSessions, rememberCachedNewSession, stripCachedNewSessionMarker } from "../cachedNewSessions";
+import { t } from "../i18n/i18n";
 import { textMessage } from "../chatMessages";
 import { machineSessionKey } from "../machineKeys";
 import { isCreatingSessionId } from "../route";
@@ -453,7 +454,7 @@ export class SessionController {
     const pending = this.pendingSessionStarts.get(session.id);
     if (pending === undefined || pending.discarded) {
       const errorOwner = pending === undefined ? this.captureSessionErrorOwner(session) : this.captureSessionErrorOwner(session, pending.originWorkspace);
-      this.reportSessionError(session, session.machineId, "The backend session is not ready for queued sends. Copy your message before discarding this failed start.", errorOwner);
+      this.reportSessionError(session, session.machineId, t("The backend session is not ready for queued sends. Copy your message before discarding this failed start."), errorOwner);
       return;
     }
     const queued: QueuedPendingSessionSend = { ...input, id: `pending-send-${String(++this.pendingQueuedSendSeq)}` };
@@ -585,8 +586,8 @@ export class SessionController {
     let result: CommandResult;
     try {
       result = await this.api.runCommand(session, "/tree", machineId);
-      if (result.type !== "tree") throw new Error("message" in result ? result.message : "Session history is unavailable.");
-      if (!result.tree.nodes.some((node) => node.id === entryId)) throw new Error("This message is no longer available in session history.");
+      if (result.type !== "tree") throw new Error("message" in result ? result.message : t("Session history is unavailable."));
+      if (!result.tree.nodes.some((node) => node.id === entryId)) throw new Error(t("This message is no longer available in session history."));
     } catch (error) {
       this.reportSessionError(session, machineId, error, errorOwner);
       throw error;
@@ -2315,7 +2316,7 @@ function failedPendingSessionActivity(sessionId: string, message: string, queued
   return {
     sessionId,
     phase: "error",
-    label: "Session creation failed",
+    label: t("Session creation failed"),
     detail: `${message}${queuedDetail}`,
     at: new Date().toISOString(),
   };

@@ -1,5 +1,6 @@
 import type { SessionTreeNode, SessionTreeSnapshot, SessionTreeSummaryChoice } from "./api";
 import { SESSION_TREE_CUSTOM_INSTRUCTIONS_MAX_LENGTH } from "../../shared/apiTypes";
+import { t } from "./i18n/i18n";
 
 export interface SessionTreeModel {
   readonly nodesById: ReadonlyMap<string, SessionTreeNode>;
@@ -200,7 +201,7 @@ export function toggleSessionTreeFold(model: SessionTreeModel, state: SessionTre
 
 export function validateSessionTreeSummaryChoice(mode: SessionTreeSummaryChoice["mode"], customInstructions: string): SessionTreeSummaryValidation {
   if (mode === "none" || mode === "default") return { ok: true, choice: { mode } };
-  if (customInstructions.trim() === "") return { ok: false, error: "Enter custom summary focus instructions." };
+  if (customInstructions.trim() === "") return { ok: false, error: t("Enter custom summary focus instructions.") };
   if (customInstructions.length > SESSION_TREE_CUSTOM_INSTRUCTIONS_MAX_LENGTH) {
     return { ok: false, error: `Custom summary focus must be ${String(SESSION_TREE_CUSTOM_INSTRUCTIONS_MAX_LENGTH)} characters or fewer.` };
   }
