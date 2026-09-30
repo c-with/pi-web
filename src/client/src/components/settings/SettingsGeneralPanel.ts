@@ -17,7 +17,7 @@ import {
 } from "./settingsConfigDraft";
 
 function generalDescription(targetLabel: string): TemplateResult {
-  return html`Gateway server fields edit this local gateway. File access and upload defaults edit ${targetLabel}.`;
+  return html`${t("Gateway server fields edit this local gateway. File access and upload defaults edit {target}.", { target: targetLabel })}`;
 }
 
 @customElement("settings-general-panel")
@@ -54,9 +54,9 @@ export class SettingsGeneralPanel extends LocalizedLitElement {
   override render(): TemplateResult {
     return html`
       <settings-panel-frame
-        heading="General configuration"
+        heading=${t("General configuration")}
         .description=${generalDescription(this.targetLabel)}
-        actionLabel="Reload"
+        actionLabel=${t("Reload")}
         .actionDisabled=${this.loading || this.machineLoading}
         .notices=${this.panelNotices()}
         .onAction=${() => { this.reloadAll(); }}

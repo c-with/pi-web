@@ -2107,29 +2107,29 @@ export class PiWebApp extends LocalizedLitElement {
     if (project === undefined) {
       return this.state.projects.length === 0
         ? {
-            title: "No projects yet",
-            body: "Use Actions → Add Project to add a folder. Workspace tools will appear here after you choose a workspace.",
+            title: t("No projects yet"),
+            body: t("Use Actions → Add Project to add a folder. Workspace tools will appear here after you choose a workspace."),
           }
         : {
-            title: "Select a project",
-            body: "Choose a project from the sidebar, then select a workspace to use its tools.",
+            title: t("Select a project"),
+            body: t("Choose a project from the sidebar, then select a workspace to use its tools."),
           };
     }
     if (this.state.isLoadingWorkspaces) {
       return {
-        title: "Loading workspaces…",
-        body: `Preparing workspace tools for ${project.name}.`,
+        title: t("Loading workspaces…"),
+        body: t("Preparing workspace tools for {project}.", { project: project.name }),
       };
     }
     if (this.state.workspaces.length === 0) {
       return {
-        title: "No workspaces found",
-        body: `${project.name} does not have any available workspaces. Try selecting the project again or re-adding it.`,
+        title: t("No workspaces found"),
+        body: t("{project} does not have any available workspaces. Try selecting the project again or re-adding it.", { project: project.name }),
       };
     }
     return {
-      title: "Select a workspace",
-      body: `Choose a workspace in ${project.name} to use its tools.`,
+      title: t("Select a workspace"),
+      body: t("Choose a workspace in {project} to use its tools.", { project: project.name }),
     };
   }
 
@@ -3173,10 +3173,10 @@ export class PiWebApp extends LocalizedLitElement {
   }
 
   private autoThemeDescription(resolution: ThemePreferenceResolution): string {
-    if (!this.themePreference.auto) return "Follow the system light/dark preference when the selected theme has a pair.";
-    if (resolution.selectedTheme === undefined) return "Follow the system light/dark preference when the selected theme has a pair.";
-    if (resolution.selectedThemePair === undefined) return "On, but the selected theme has no light/dark pair, so it will stay selected.";
-    return `On · ${resolution.selectedThemePair.name} follows the system ${this.systemPrefersLight() ? "light" : "dark"} preference.`;
+    if (!this.themePreference.auto) return t("Follow the system light/dark preference when the selected theme has a pair.");
+    if (resolution.selectedTheme === undefined) return t("Follow the system light/dark preference when the selected theme has a pair.");
+    if (resolution.selectedThemePair === undefined) return t("On, but the selected theme has no light/dark pair, so it will stay selected.");
+    return `${t("On ·")} ${resolution.selectedThemePair.name} ${t("follows the system {mode} preference.", { mode: this.systemPrefersLight() ? "light" : "dark" })}`;
   }
 
   private themeOptionLabel(theme: QualifiedThemeContribution, selectedThemeId: QualifiedContributionId | undefined): string {
@@ -3184,13 +3184,13 @@ export class PiWebApp extends LocalizedLitElement {
       ...(theme.id === selectedThemeId ? ["selected"] : []),
       ...(theme.id === this.activeThemeId && theme.id !== selectedThemeId ? ["active"] : []),
     ];
-    return markers.length === 0 ? theme.name : `${theme.name} ✓ ${markers.join(" · ")}`;
+    return markers.length === 0 ? t(theme.name) : `${t(theme.name)} ✓ ${markers.join(" · ")}`;
   }
 
   private themeOptionDescription(theme: QualifiedThemeContribution): string {
     const parts: string[] = [theme.colorScheme];
-    if (this.themePairForTheme(theme.id) !== undefined) parts.push("auto pair");
-    if (theme.description !== undefined) parts.push(theme.description);
+    if (this.themePairForTheme(theme.id) !== undefined) parts.push(t("auto pair"));
+    if (theme.description !== undefined) parts.push(t(theme.description));
     return parts.join(" · ");
   }
 

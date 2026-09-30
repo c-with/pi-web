@@ -45,7 +45,7 @@ export class SettingsPanelFrame extends LocalizedLitElement {
 
   override render(): TemplateResult {
     return html`
-      <section class="panel" aria-label=${this.heading || "Settings panel"}>
+      <section class="panel" aria-label=${this.heading || t("Settings panel")}>
         <header class="section-heading">
           <div class="heading-copy">
             ${this.heading === "" ? nothing : html`<h2>${this.heading}</h2>`}

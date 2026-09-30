@@ -16,10 +16,10 @@ describe("settings-general-panel copy", () => {
     const values = collectTemplateValues(template);
 
     expect(strings).toContain("<settings-panel-frame");
-    expect(strings).toContain("Gateway server fields edit this local gateway. File access and upload defaults edit ");
+    expect(values).toContain("Gateway server fields edit this local gateway. File access and upload defaults edit Lab Mac (remote machine).");
     expect(values).toContain("Host, port, and allowed hosts are saved in the gateway config. Address changes require the web service to restart before the running server binds to the new address.");
     expect(strings).toContain("External filesystem roots and upload defaults are saved on ");
-    expect(values.filter((value) => value === "Lab Mac (remote machine)")).toHaveLength(4);
+    expect(values.filter((value) => value === "Lab Mac (remote machine)")).toHaveLength(3);
   });
 
   it("shows reload copy when selected-machine access config is unavailable", () => {
