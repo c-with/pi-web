@@ -100,7 +100,7 @@ export class SettingsPackagesPanel extends LocalizedLitElement {
       <form class="install-card" @submit=${(event: Event) => { void this.installPackage(event); }}>
         <label for="package-source">${t("Pi package source")}</label>
         <div class="install-row">
-          <input id="package-source" .value=${this.installSource} ?disabled=${this.isOperating} placeholder="npm:@scope/package, git URL, or local path" @input=${(event: Event) => { this.updateInstallSource(event); }}>
+          <input id="package-source" .value=${this.installSource} ?disabled=${this.isOperating} placeholder=${t("npm:@scope/package, git URL, or local path")} @input=${(event: Event) => { this.updateInstallSource(event); }}>
           <button type="submit" title=${t("Install this Pi package")} ?disabled=${this.isOperating}>${isPiPackageOperationPending(this.operation, "install") ? t("Installing…") : t("Install")}</button>
         </div>
         ${this.validationMessage === "" ? null : html`<div class="field-error">${this.validationMessage}</div>`}

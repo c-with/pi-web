@@ -222,8 +222,8 @@ export class SettingsGeneralPanel extends LocalizedLitElement {
       <section class="effective-card" aria-label=${t("Effective gateway configuration summary")}>
         <h3>${t("Effective gateway settings after environment overrides")}</h3>
         <dl>
-          <div><dt>${t("Host")}</dt><dd>${effective.host ?? html`<span class="muted">127.0.0.1 default</span>`}</dd></div>
-          <div><dt>${t("Port")}</dt><dd>${effective.port ?? html`<span class="muted">8504 default</span>`}</dd></div>
+          <div><dt>${t("Host")}</dt><dd>${effective.host ?? html`<span class="muted">${t("{value} default", { value: "127.0.0.1" })}</span>`}</dd></div>
+          <div><dt>${t("Port")}</dt><dd>${effective.port ?? html`<span class="muted">${t("{value} default", { value: "8504" })}</span>`}</dd></div>
           <div><dt>${t("Allowed hosts")}</dt><dd>${formatAllowedHosts(effective.allowedHosts)}</dd></div>
         </dl>
       </section>

@@ -1,4 +1,5 @@
 import type { AppAction } from "./actions";
+import { t } from "./i18n/i18n";
 
 export const shortcutSequenceTimeoutMs = 1200;
 
@@ -262,7 +263,7 @@ function compareStrings(left: string, right: string): number {
 
 function parseShortcut(shortcut: string): ShortcutParseResult {
   const cleaned = shortcut.trim().toLowerCase().replace(/\s*\+\s*/gu, "+");
-  if (cleaned === "") return { ok: false, message: "Enter a shortcut, choose None, or reset to the default." };
+  if (cleaned === "") return { ok: false, message: t("Enter a shortcut, choose None, or reset to the default.") };
 
   const tokens: string[] = [];
   const chordInputs = cleaned.split(/\s+/u).filter((token) => token !== "");
@@ -281,7 +282,7 @@ type ShortcutChordParseResult =
 
 function parseShortcutChord(chord: string): ShortcutChordParseResult {
   const parts = chord.split("+").filter((part) => part !== "");
-  if (parts.length === 0) return { ok: false, message: "Shortcut chords must include a key." };
+  if (parts.length === 0) return { ok: false, message: t("Shortcut chords must include a key.") };
 
   const modifiers = new Set<ShortcutModifier>();
   let key: string | undefined;
@@ -294,12 +295,12 @@ function parseShortcutChord(chord: string): ShortcutChordParseResult {
     }
 
     const normalizedKey = normalizeShortcutKeyName(part);
-    if (normalizedKey === undefined) return { ok: false, message: `Unsupported shortcut key: ${part}` };
-    if (key !== undefined) return { ok: false, message: "Each shortcut chord can include only one non-modifier key." };
+    if (normalizedKey === undefined) return { ok: false, message: t("Unsupported shortcut key: {key}", { key: part }) };
+    if (key !== undefined) return { ok: false, message: t("Each shortcut chord can include only one non-modifier key.") };
     key = normalizedKey;
   }
 
-  if (key === undefined) return { ok: false, message: "Shortcut chords must include a key." };
+  if (key === undefined) return { ok: false, message: t("Shortcut chords must include a key.") };
 
   const orderedModifiers = modifierOrder.filter((modifier) => modifiers.has(modifier));
   return { ok: true, token: [...orderedModifiers, key].join("+") };

@@ -129,7 +129,7 @@ export class SettingsPluginsPanel extends LocalizedLitElement {
       `;
     }
     return html`
-      <div class="plugin-note">Config key on ${this.targetLabel}: <code>plugins</code>. Browser-only changes apply after a tab reload; server-backed changes follow sessiond's startup snapshot and can require a manual restart.</div>
+      <div class="plugin-note">${t("Config key on {target}:", { target: this.targetLabel })} <code>plugins</code>${t(". Browser-only changes apply after a tab reload; server-backed changes follow sessiond's startup snapshot and can require a manual restart.")}</div>
       <div class="plugin-list">
         ${plugins.map((plugin) => this.renderPlugin(plugin))}
       </div>
@@ -183,8 +183,8 @@ export class SettingsPluginsPanel extends LocalizedLitElement {
     if (recovery === undefined) return nothing;
     return html`
       <aside class="recovery" aria-label=${t("Offline server-plugin recovery commands")}>
-        <strong>Offline recovery on ${this.targetLabel}</strong>
-        <small>These commands edit config without contacting sessiond or importing plugins. They never include machine credentials.</small>
+        <strong>${t("Offline recovery on {target}", { target: this.targetLabel })}</strong>
+        <small>${t("These commands edit config without contacting sessiond or importing plugins. They never include machine credentials.")}</small>
         <code>${recovery.showSafeStart}</code>
         <code>${recovery.bundledOnly}</code>
         <code>${recovery.noServerPlugins}</code>
