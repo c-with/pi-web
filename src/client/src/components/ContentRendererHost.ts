@@ -1,4 +1,6 @@
-import { LitElement, css, html, type PropertyValues, type TemplateResult } from "lit";
+import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
+import { t } from "../i18n/i18n";
+import { css, html, type PropertyValues, type TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import type { ContentRendererContribution } from "../../../plugin-api";
 import type { ContentRendererChoice } from "../plugins/contentRenderers";
@@ -15,7 +17,7 @@ function isTemplateResult(value: unknown): value is TemplateResult {
 
 /** Owns source access independently of the plugin's rendering success. */
 @customElement("pi-web-content-renderer")
-export class ContentRendererHost extends LitElement {
+export class ContentRendererHost extends LocalizedLitElement {
   @property({ type: Boolean, reflect: true, attribute: "external-controls" }) externalControls = false;
   @property() text = "";
   @property() intentKey: string | undefined;
@@ -103,7 +105,7 @@ export class ContentRendererHost extends LitElement {
     const fail = (error: unknown): void => {
       if (controller.signal.aborted || this.controller !== controller) return;
       console.warn(`Content renderer ${this.renderer?.id ?? "unknown"} failed`, error);
-      this.failure = "Preview failed. Raw source is shown below.";
+      this.failure = t("Preview failed. Raw source is shown below.");
       this.cancelPreview();
     };
     try {
@@ -122,7 +124,7 @@ export class ContentRendererHost extends LitElement {
   private async copy(): Promise<void> {
     const text = this.text;
     const copied = await writeClipboardText(text);
-    if (this.isConnected && text === this.text) this.copyStatus = copied ? "Copied source" : "Failed to copy source";
+    if (this.isConnected && text === this.text) this.copyStatus = copied ? t("Copied source") : t("Failed to copy source");
   }
 
   override render() {
@@ -134,12 +136,12 @@ export class ContentRendererHost extends LitElement {
     return html`
       ${this.externalControls ? null : html`<div class="controls" role="group" aria-label="Diagram controls">
         ${this.choices.length < 2 ? null : html`
-          <select aria-label="Diagram renderer" @change=${(event: Event) => { if (event.target instanceof HTMLSelectElement) this.selectRenderer(event.target.value); }}>
+          <select aria-label=${t("Diagram renderer")} @change=${(event: Event) => { if (event.target instanceof HTMLSelectElement) this.selectRenderer(event.target.value); }}>
             ${this.choices.map(({ id, label }) => html`<option value=${id} .selected=${id === this.selectedId}>${label}</option>`)}
           </select>
         `}
         ${this.renderer === undefined ? null : html`
-          <button type="button" aria-controls="content" aria-pressed=${!showingRaw} @click=${() => { this.setRaw(false); }}>${this.renderer.renderMode === "automatic" ? "Preview" : "Render"}</button>
+          <button type="button" aria-controls="content" aria-pressed=${!showingRaw} @click=${() => { this.setRaw(false); }}>${this.renderer.renderMode === "automatic" ? t("Preview") : t("Render")}</button>
           <button type="button" aria-controls="content" aria-pressed=${showingRaw} @click=${() => { this.setRaw(true); }}>Raw</button>
         `}
         <button class="copy" type="button" @click=${() => { void this.copy(); }}>${this.copyStatus}</button>
@@ -147,7 +149,7 @@ export class ContentRendererHost extends LitElement {
       </div>`}
       <div id="content">
         ${diagnostic === undefined ? null : html`<p role="status">${diagnostic}</p>`}
-        ${showingRaw ? html`<pre tabindex="0" aria-label="Raw source"><code>${this.text}</code></pre>` : html`<div class="preview" tabindex="0" aria-label="Diagram preview">${preview}</div>`}
+        ${showingRaw ? html`<pre tabindex="0" aria-label=${t("Raw source")}><code>${this.text}</code></pre>` : html`<div class="preview" tabindex="0" aria-label=${t("Diagram preview")}>${preview}</div>`}
       </div>
     `;
   }

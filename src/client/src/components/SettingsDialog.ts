@@ -1,4 +1,6 @@
-import { css, html, LitElement, type PropertyValues, type TemplateResult } from "lit";
+import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
+import { t } from "../i18n/i18n";
+import { css, html, type PropertyValues, type TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import type { AppAction } from "../actions";
 import { configApi, piPackagesApi, pluginsApi, type Machine, type MachineRuntime, type PiPackageMutationResponse, type PiPackageScope, type PiPackagesResponse, type PiWebConfigResponse, type PiWebConfigValues, type PiWebPluginsResponse } from "../api";
@@ -17,7 +19,7 @@ import { mergeSelectedMachinePluginConfig, pluginEnabledConfigPatch } from "./se
 import { mergeSelectedMachineSessiondConfig } from "./settings/settingsSessiondConfig";
 
 @customElement("settings-dialog")
-export class SettingsDialog extends LitElement {
+export class SettingsDialog extends LocalizedLitElement {
   @property({ attribute: false }) section: SettingsSection = "general";
   @property({ attribute: false }) actions: AppAction[] = [];
   @property({ attribute: false }) machine: Machine | undefined;
@@ -98,13 +100,13 @@ export class SettingsDialog extends LitElement {
       <modal-surface .onClose=${() => this.onClose?.()} .label=${"PI WEB settings"}>
         <header class="settings-header">
           <div>
-            <span class="eyebrow">Settings</span>
+            <span class="eyebrow">${t("Settings")}</span>
             <h1>PI WEB</h1>
           </div>
-          <button class="close-button" title="Close settings" aria-label="Close settings" @click=${() => this.onClose?.()}>×</button>
+          <button class="close-button" title=${t("Close settings")} aria-label=${t("Close settings")} @click=${() => this.onClose?.()}>×</button>
         </header>
         <div class="settings-body">
-          <nav class="settings-nav" aria-label="Settings sections">
+          <nav class="settings-nav" aria-label=${t("Settings sections")}>
             ${this.renderNavButton("general", "General", "Gateway + selected machine")}
             ${this.renderNavButton("sessiond", "Session daemon", "Selected machine")}
             ${this.renderNavButton("packages", "Pi packages", "Selected machine")}

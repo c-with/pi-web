@@ -1,4 +1,6 @@
-import { css, html, LitElement, nothing, type TemplateResult } from "lit";
+import { LocalizedLitElement } from "../../i18n/LocalizedLitElement";
+import { t } from "../../i18n/i18n";
+import { css, html, nothing, type TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 export const SETTINGS_NOTICE_TONES = ["error", "success", "warning", "info"] as const;
@@ -32,7 +34,7 @@ export function settingsNoticeTone(notice: SettingsNotice): SettingsNoticeTone {
 }
 
 @customElement("settings-panel-frame")
-export class SettingsPanelFrame extends LitElement {
+export class SettingsPanelFrame extends LocalizedLitElement {
   @property() heading = "";
   @property({ attribute: false }) description: SettingsNoticeContent = "";
   @property() actionLabel = "";
@@ -72,7 +74,7 @@ export class SettingsPanelFrame extends LitElement {
   private renderNoticeStack(): TemplateResult | typeof nothing {
     if (this.notices.length === 0) return nothing;
     return html`
-      <div class="notice-stack" aria-label="Settings notices">
+      <div class="notice-stack" aria-label=${t("Settings notices")}>
         ${this.notices.map((notice) => this.renderNotice(notice))}
       </div>
     `;

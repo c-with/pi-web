@@ -1,4 +1,6 @@
-import { LitElement, css, html, type PropertyValues, type TemplateResult } from "lit";
+import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
+import { t } from "../i18n/i18n";
+import { css, html, type PropertyValues, type TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import {
@@ -18,11 +20,11 @@ const COUNTDOWN_TICK_MS = 1_000;
 /** Header status label for a closed extension dialog. */
 export function extensionDialogCloseLabel(reason: ExtensionDialogCloseReason): string {
   switch (reason) {
-    case "answered": return "Answered";
-    case "cancelled": return "Cancelled";
-    case "timeout": return "Timed out";
-    case "aborted": return "Aborted";
-    case "session-ended": return "Session ended";
+    case "answered": return t("Answered");
+    case "cancelled": return t("Cancelled");
+    case "timeout": return t("Timed out");
+    case "aborted": return t("Aborted");
+    case "session-ended": return t("Session ended");
   }
 }
 
@@ -34,7 +36,7 @@ export function extensionDialogCloseSummary(closed: ClosedExtensionDialog): stri
       // An answered close without an answer value breaks the wire contract;
       // the card still renders rather than crashing the transcript.
       if (answer === undefined) return "Closed without an answer.";
-      if (typeof answer === "boolean") return `Answered: ${answer ? "Yes" : "No"}`;
+      if (typeof answer === "boolean") return `Answered: ${answer ? t("Yes") : t("No")}`;
       return answer === "" ? "Answered with an empty response." : `Answered: ${answer}`;
     }
     case "cancelled": return "Dismissed without an answer.";
@@ -80,7 +82,7 @@ export function extensionDialogCountdownText(timeoutAt: string | undefined, nowM
  * browser that saw the dialog open.
  */
 @customElement("extension-dialog-card")
-export class ExtensionDialogCard extends LitElement {
+export class ExtensionDialogCard extends LocalizedLitElement {
   @property({ attribute: false }) dialog?: PendingExtensionDialog;
   @property({ attribute: false }) outcome?: ClosedExtensionDialog;
   @property({ attribute: false }) onAnswer?: ExtensionDialogAnswerCallback;
@@ -160,7 +162,7 @@ export class ExtensionDialogCard extends LitElement {
 
   private renderSelectBody(dialog: PendingExtensionDialog): TemplateResult {
     return html`
-      <div class="dialog-options" role="group" aria-label="Choices">
+      <div class="dialog-options" role="group" aria-label=${t("Choices")}>
         ${(dialog.options ?? []).map((option) => html`
           <button class="option-button" type="button" ?disabled=${this.closing} @click=${() => { this.answerDialog(dialog, option); }}>${option}</button>
         `)}
@@ -178,7 +180,7 @@ export class ExtensionDialogCard extends LitElement {
           class="dialog-input"
           type="text"
           name="dialog-answer"
-          aria-label="Your answer"
+          aria-label=${t("Your answer")}
           placeholder=${ifDefined(dialog.placeholder)}
           maxlength=${String(EXTENSION_DIALOG_INPUT_MAX_LENGTH)}
           .value=${this.inputValue}
@@ -187,7 +189,7 @@ export class ExtensionDialogCard extends LitElement {
         />
         <footer class="dialog-footer">
           <button class="secondary-action" type="button" ?disabled=${this.closing} @click=${() => { this.cancelDialog(dialog); }}>Cancel</button>
-          <button class="primary-action" type="submit" ?disabled=${this.closing}>${this.closing ? "Sending…" : "Send"}</button>
+          <button class="primary-action" type="submit" ?disabled=${this.closing}>${this.closing ? t("Sending…") : t("Send")}</button>
         </footer>
       </form>
     `;

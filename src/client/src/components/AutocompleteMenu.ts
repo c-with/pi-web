@@ -1,10 +1,11 @@
-import { LitElement, html } from "lit";
+import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
+import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { scrollWhenSelected } from "./scrollWhenSelected";
 import { autocompleteStyles, type CompletionItem } from "./shared";
 
 @customElement("autocomplete-menu")
-export class AutocompleteMenu extends LitElement {
+export class AutocompleteMenu extends LocalizedLitElement {
   @property({ attribute: false }) items: CompletionItem[] = [];
   @property({ type: Number }) selectedIndex = 0;
   @property({ attribute: false }) onPick?: (item: CompletionItem) => void;

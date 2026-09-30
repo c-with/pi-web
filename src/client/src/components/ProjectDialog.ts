@@ -1,4 +1,6 @@
-import { LitElement, html } from "lit";
+import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
+import { t } from "../i18n/i18n";
+import { html } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 import { api, trustApi, type FileSuggestion } from "../api";
 import type { ProjectTrustChoice } from "../controllers/projectController";
@@ -15,7 +17,7 @@ interface ProjectTrustState {
 }
 
 @customElement("project-dialog")
-export class ProjectDialog extends LitElement {
+export class ProjectDialog extends LocalizedLitElement {
   @property({ attribute: false }) onSubmit?: (path: string, create: boolean, trust: ProjectTrustChoice | undefined) => void;
   @property({ attribute: false }) onCancel?: () => void;
   @property() machineId = "local";
@@ -122,11 +124,11 @@ export class ProjectDialog extends LitElement {
     return html`
       <label class="check">
         <input type="checkbox" .checked=${this.trust?.trusted ?? false} ?disabled=${unavailable} @change=${(event: InputEvent) => { if (event.target instanceof HTMLInputElement) this.onTrustChange(event.target.checked); }} />
-        <span>Trust this project</span>
+        <span>${t("Trust this project")}</span>
       </label>
       <small class="trust-hint">
         Trusting lets pi load this project's .pi settings, extensions, skills, and packages.
-        <a href="https://pi.dev/docs/latest/security" target="_blank" rel="noreferrer">Learn about project trust</a>
+        <a href="https://pi.dev/docs/latest/security" target="_blank" rel="noreferrer">${t("Learn about project trust")}</a>
       </small>
       ${this.trust?.error === undefined ? null : html`<small class="trust-error">Trust state unavailable: ${this.trust.error}</small>`}
     `;
@@ -160,16 +162,16 @@ export class ProjectDialog extends LitElement {
       <modal-surface
         .onClose=${() => this.onCancel?.()}
         .initialFocus=${"input"}
-        .label=${"Add project"}
+        .label=${t("Add project")}
         @keydown=${(event: KeyboardEvent) => { this.onKeyDown(event); }}
       >
         <header>
-          <strong>Add project</strong>
-          <button @click=${() => { this.onCancel?.(); }} aria-label="Close">×</button>
+          <strong>${t("Add project")}</strong>
+          <button @click=${() => { this.onCancel?.(); }} aria-label=${t("Close")}>×</button>
         </header>
         <div class="body">
           <label>
-            Project folder
+            ${t("Project folder")}
             <input .value=${this.path} @input=${(event: InputEvent) => { this.onPathInput(event); }} placeholder="/path/to/project or ~/code/project" />
           </label>
           <div class="suggestions">
@@ -189,7 +191,7 @@ export class ProjectDialog extends LitElement {
         </div>
         <footer>
           <button @click=${() => { this.onCancel?.(); }}>Cancel</button>
-          <button class="primary" ?disabled=${this.path.trim() === ""} @click=${() => { this.submit(); }}>Add project</button>
+          <button class="primary" ?disabled=${this.path.trim() === ""} @click=${() => { this.submit(); }}>${t("Add project")}</button>
         </footer>
       </modal-surface>
     `;

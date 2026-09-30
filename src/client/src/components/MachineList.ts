@@ -1,4 +1,6 @@
-import { LitElement, css, html, type PropertyValues } from "lit";
+import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
+import { t } from "../i18n/i18n";
+import { css, html, type PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import type { Machine, MachineHealth } from "../api";
 import type { MachineStatusSnapshot } from "../../../shared/machineStatus";
@@ -9,7 +11,7 @@ import { activateSelectableRow, focusSelectedOrFirstSelectableRow, handleSelecta
 import { listStyles } from "./shared";
 
 @customElement("machine-list")
-export class MachineList extends LitElement implements KeyboardNavigableSection {
+export class MachineList extends LocalizedLitElement implements KeyboardNavigableSection {
   @property({ attribute: false }) machines: Machine[] = [];
   @property({ attribute: false }) selected?: Machine;
   @property({ attribute: false }) statuses: Record<string, MachineHealth> = {};
@@ -101,7 +103,7 @@ export class MachineList extends LitElement implements KeyboardNavigableSection 
       <div class="action-menu">
         <button
           class="action-menu-toggle"
-          title="Machine actions"
+          title=${t("Machine actions")}
           aria-label=${`Actions for ${machine.name}`}
           aria-expanded=${String(open)}
           aria-controls=${menuId}
@@ -117,7 +119,7 @@ export class MachineList extends LitElement implements KeyboardNavigableSection 
   }
 
   private renderHeading() {
-    if (!this.collapsible) return html`<span>Machines</span>`;
+    if (!this.collapsible) return html`<span>${t("Machines")}</span>`;
     const selectedSummary = this.selected?.name ?? "No machine selected";
     const selectedTitle = this.selected?.baseUrl ?? selectedSummary;
     return html`<button class="section-toggle" aria-expanded=${String(!this.collapsed)} @click=${() => { this.onToggleCollapsed?.(); }}><span class="section-title"><span class="section-name">${this.collapsed ? "▸" : "▾"} Machines</span>${this.collapsed ? html`<small class="section-selected" title=${selectedTitle}>${selectedSummary}</small>` : null}</span><small class="section-count">${this.machines.length}</small></button>`;

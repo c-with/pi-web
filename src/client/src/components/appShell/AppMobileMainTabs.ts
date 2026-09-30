@@ -1,4 +1,5 @@
-import { LitElement, css, html, type TemplateResult } from "lit";
+import { LocalizedLitElement } from "../../i18n/LocalizedLitElement";
+import { css, html, type TemplateResult } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 import type { QualifiedContributionId } from "../../plugins/types";
 import { renderNavigationMenuIcon, renderAppTabIcon, type AppTabBuiltinIcon } from "../tabIcons";
@@ -19,7 +20,7 @@ export interface AppMobileMainTab {
 }
 
 @customElement("app-mobile-main-tabs")
-export class AppMobileMainTabs extends LitElement {
+export class AppMobileMainTabs extends LocalizedLitElement {
   @property({ attribute: false }) tabs: AppMobileMainTab[] = [];
   @property({ attribute: false }) onShowNavigation?: () => void;
   @property({ type: Boolean }) hiddenActiveDestination = false;

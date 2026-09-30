@@ -1,4 +1,6 @@
-import { LitElement, css, html, nothing } from "lit";
+import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
+import { t } from "../i18n/i18n";
+import { css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import type { CommandOption } from "../api";
 import { keyboardEventOriginatesFromNativeActivationControl } from "./keyboardEventTarget";
@@ -7,7 +9,7 @@ import { defaultPin, defaultPinHelp, defaultPinStyles } from "./DefaultPin";
 import { scrollWhenSelected } from "./scrollWhenSelected";
 
 @customElement("command-picker")
-export class CommandPicker extends LitElement {
+export class CommandPicker extends LocalizedLitElement {
   @property() override title = "Select";
   @property({ type: Boolean }) searchable = false;
   @property({ attribute: false }) options: CommandOption[] = [];
@@ -33,7 +35,7 @@ export class CommandPicker extends LitElement {
       >
         <header>
           <strong>${this.title}</strong>
-          <button aria-label="Close" @click=${() => this.onCancel?.()}>×</button>
+          <button aria-label=${t("Close")} @click=${() => this.onCancel?.()}>×</button>
         </header>
         ${this.searchable ? html`<input placeholder="Search" .value=${this.query} @input=${(event: Event) => { this.handleSearchInput(event); }}>` : null}
         ${this.onSetDefault ? defaultPinHelp : nothing}
@@ -51,7 +53,7 @@ export class CommandPicker extends LitElement {
             </button>`;
             return this.onSetDefault ? html`<div class="default-row">${pick}${defaultPin(option.label, option.value === this.defaultValue, this.defaultsLoading || this.defaultPending, () => { void this.setDefault(option.value); })}</div>` : pick;
           })}
-          ${options.length === 0 ? html`<div class="empty">No matching options</div>` : null}
+          ${options.length === 0 ? html`<div class="empty">${t("No matching options")}</div>` : null}
         </div>
       </modal-surface>
     `;

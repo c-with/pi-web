@@ -1,4 +1,6 @@
-import { LitElement, html } from "lit";
+import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
+import { t } from "../i18n/i18n";
+import { html } from "lit";
 import type { ChatContentRendering } from "../formatting/contentRendering";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
@@ -8,7 +10,7 @@ import type { MarkdownWorkspaceContext, WorkspaceFileOpenRequest } from "../form
 import { formattedTextStyles } from "./shared";
 
 @customElement("formatted-text")
-export class FormattedText extends LitElement {
+export class FormattedText extends LocalizedLitElement {
   @property() text = "";
   @property() intentKey: string | undefined;
   @property({ attribute: false }) contentRendering: ChatContentRendering | undefined;
@@ -38,8 +40,8 @@ export class FormattedText extends LitElement {
       const button = document.createElement("button");
       button.type = "button";
       button.className = "code-copy-button";
-      button.title = "Copy code block";
-      button.setAttribute("aria-label", "Copy code block");
+      button.title = t("Copy code block");
+      button.setAttribute("aria-label", t("Copy code block"));
       const icon = document.createElement("span");
       icon.setAttribute("aria-hidden", "true");
       icon.textContent = "⧉";
@@ -84,7 +86,7 @@ export class FormattedText extends LitElement {
   private setCopyButtonState(button: HTMLButtonElement, state: "idle" | "copied" | "failed"): void {
     const icon = button.querySelector("span");
     if (icon !== null) icon.textContent = state === "copied" ? "✓" : "⧉";
-    const label = state === "copied" ? "Copied code block" : state === "failed" ? "Failed to copy code block" : "Copy code block";
+    const label = state === "copied" ? t("Copied code block") : state === "failed" ? t("Failed to copy code block") : t("Copy code block");
     button.title = label;
     button.setAttribute("aria-label", label);
   }

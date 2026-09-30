@@ -1,4 +1,6 @@
-import { LitElement, html } from "lit";
+import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
+import { t } from "../i18n/i18n";
+import { html } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 import { keyed } from "lit/directives/keyed.js";
@@ -186,7 +188,7 @@ function chatMessageModelLabel(message: ChatLine): string | undefined {
 }
 
 @customElement("chat-view")
-export class ChatView extends LitElement {
+export class ChatView extends LocalizedLitElement {
   @property({ attribute: false }) messages: ChatLine[] = [];
   @property() sessionId = "";
   @property({ attribute: false }) workspaceContext: MarkdownWorkspaceContext | undefined;
@@ -471,7 +473,7 @@ export class ChatView extends LitElement {
     const totalCount = notificationInboxTotalCount(inbox);
     if (totalCount === 0 && !hasPendingOverlay && !retainsFocusTarget) return null;
     const collapsed = notificationTrayIsCollapsed(this.collapsedNotificationTargetKeys, inbox);
-    const toggleLabel = collapsed ? "Expand notifications" : "Collapse notifications";
+    const toggleLabel = collapsed ? t("Expand notifications") : t("Collapse notifications");
     return html`
       <section class=${`notification-tray${collapsed ? " collapsed" : ""}`} role="region" aria-labelledby="session-notifications-heading" @focusout=${(event: FocusEvent) => { this.releaseEmptyNotificationTray(event); }}>
         <header class="notification-header" data-notification-focus="header" tabindex="-1">
@@ -631,7 +633,7 @@ export class ChatView extends LitElement {
                 type="button"
                 class="session-warning-dismiss"
                 title="Don't show this warning again"
-                aria-label="Dismiss warning"
+                aria-label=${t("Dismiss warning")}
                 @click=${() => { this.onDismissWarning?.(dismissId); }}
               >×</button>
             `}
@@ -678,7 +680,7 @@ export class ChatView extends LitElement {
       return html`
         <div class="activity-dock active" aria-live="polite">
           <span class="dot"></span>
-          <span class="activity-text">Sending your message…</span>
+          <span class="activity-text">${t("Sending your message…")}</span>
         </div>
       `;
     }
@@ -713,7 +715,7 @@ export class ChatView extends LitElement {
         </div>
         ${section.messages.map((message, index) => html`
           <div class="queued-message">
-            <span class="queued-kind">${message.kind === "steer" ? "Steer" : "Follow-up"} ${String(index + 1)}</span>
+            <span class="queued-kind">${message.kind === "steer" ? t("Steer") : t("Follow-up")} ${String(index + 1)}</span>
             <formatted-text .intentKey=${JSON.stringify([this.machineId, this.sessionId, "queue", section.source, index, message.kind])} .contentRendering=${this.contentRendering} .machineId=${this.machineId} .workspaceContext=${this.workspaceContext} .text=${message.text}></formatted-text>
           </div>
         `)}
@@ -769,7 +771,7 @@ export class ChatView extends LitElement {
     if (!this.isCompacting) return null;
     return html`
       <aside class="session-activity compacting" aria-live="polite">
-        <strong>Compacting history…</strong>
+        <strong>${t("Compacting history…")}</strong>
         <span>The agent is summarizing earlier context. New prompts will be queued until compaction finishes.</span>
         ${this.pendingMessageCount > 0 ? html`<small>${this.pendingMessageCount} queued ${this.pendingMessageCount === 1 ? "message" : "messages"}</small>` : null}
       </aside>
@@ -815,15 +817,15 @@ export class ChatView extends LitElement {
 
   private renderHistoryBoundary() {
     const range = this.historyRangeLabel();
-    if (this.loadingMore) return html`<div class="history-boundary"><span>Loading earlier messages…</span>${range}</div>`;
+    if (this.loadingMore) return html`<div class="history-boundary"><span>${t("Loading earlier messages…")}</span>${range}</div>`;
     if (this.hasMore) return html`
       <div class="history-boundary">
         <button type="button" class="history-load-button" ?disabled=${this.loadMoreRequested} @click=${() => { this.requestLoadMore(); }}>Load earlier messages</button>
-        <span>Scroll up to load earlier messages</span>
+        <span>${t("Scroll up to load earlier messages")}</span>
         ${range}
       </div>
     `;
-    if (this.messages.length) return html`<div class="history-boundary"><span>Beginning of session</span>${range}</div>`;
+    if (this.messages.length) return html`<div class="history-boundary"><span>${t("Beginning of session")}</span>${range}</div>`;
     return null;
   }
 
@@ -927,12 +929,12 @@ export class ChatView extends LitElement {
     if (!canNavigate && !canCopy) return null;
     const copied = this.copiedMessageKey === key;
     return html`
-      <div class="msg-actions" aria-label="Message actions">
+      <div class="msg-actions" aria-label=${t("Message actions")}>
         ${canNavigate ? html`
           <button type="button" class="msg-action" title="Clone session from this message" aria-label="Clone session from this message" ?disabled=${this.messageActionsDisabled || this.messageActionPending} @click=${(event: MouseEvent) => { void this.actOnMessage(message, "fork", event); }}><span class="msg-fork-icon" aria-hidden="true">⑂</span></button>
           <button type="button" class="msg-action" title="Go back to this message" aria-label="Go back to this message" ?disabled=${this.messageActionsDisabled || this.messageActionPending} @click=${(event: MouseEvent) => { void this.actOnMessage(message, "back", event); }}><svg aria-hidden="true" width="16" height="16" viewBox="-3 -3 30 30" fill="none" stroke="currentColor" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round"><path vector-effect="non-scaling-stroke" d="M4 5h11a6 6 0 0 1 0 12H4m5-5-5 5 5 5" /></svg></button>
         ` : null}
-        ${canCopy ? html`<button type="button" class="msg-action" title=${copied ? "Copied" : "Copy message"} aria-label=${`${copied ? "Copied" : "Copy"} ${message.role} message`} @click=${(event: MouseEvent) => { void this.copyMessage(message, key, event); }}>
+        ${canCopy ? html`<button type="button" class="msg-action" title=${copied ? t("Copied") : t("Copy message")} aria-label=${`${copied ? t("Copied") : "Copy"} ${message.role} message`} @click=${(event: MouseEvent) => { void this.copyMessage(message, key, event); }}>
           <span aria-hidden="true">${copied ? "✓" : "⧉"}</span>
         </button>` : null}
         ${this.messageActionError?.sessionId === this.sessionId && this.messageActionError.entryId === message.entryId ? html`<span role="alert">${this.messageActionError.message}</span>` : null}
@@ -943,7 +945,7 @@ export class ChatView extends LitElement {
   private async actOnMessage(message: ChatLine, action: "fork" | "back", event: MouseEvent): Promise<void> {
     event.stopPropagation();
     if (this.messageActionsDisabled || this.messageActionPending || message.entryId === undefined || this.onMessageAction === undefined) return;
-    if (!window.confirm(action === "fork" ? "Are you sure you want to fork this session?" : "Are you sure you want to go back to this message?")) return;
+    if (!window.confirm(action === "fork" ? t("Are you sure you want to fork this session?") : t("Are you sure you want to go back to this message?"))) return;
     const sessionId = this.sessionId;
     this.messageActionPending = true;
     this.messageActionError = undefined;
@@ -1024,7 +1026,7 @@ export class ChatView extends LitElement {
     `;
     if (part.type === "image") {
       const { src, alt } = chatImagePartSource(part);
-      return html`<img class="part chat-image" src=${src} alt=${alt} loading="lazy" role="button" tabindex="0" title="Click to enlarge" @load=${this.onImageLoad} @click=${() => { this.openImageZoom(src, alt); }} @keydown=${(event: KeyboardEvent) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); this.openImageZoom(src, alt); } }} />`;
+      return html`<img class="part chat-image" src=${src} alt=${alt} loading="lazy" role="button" tabindex="0" title=${t("Click to enlarge")} @load=${this.onImageLoad} @click=${() => { this.openImageZoom(src, alt); }} @keydown=${(event: KeyboardEvent) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); this.openImageZoom(src, alt); } }} />`;
     }
     if (part.type === "toolCall") return html`<div class="part tool-line">▶ ${part.toolName}<span class="summary">${part.summary}</span></div>`;
     if (part.type === "toolExecution") return html`<tool-execution-view class="part" .execution=${part}></tool-execution-view>`;

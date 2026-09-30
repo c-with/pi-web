@@ -1,4 +1,6 @@
-import { LitElement, css, html, nothing, type PropertyValues, type TemplateResult } from "lit";
+import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
+import { t } from "../i18n/i18n";
+import { css, html, nothing, type PropertyValues, type TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 import type { CommandOption, SessionModelCatalogEntry, SessionModelScopeMode } from "../api";
@@ -109,7 +111,7 @@ interface ModelPickerRow {
  * UX only, never an authorization boundary.
  */
 @customElement("model-picker")
-export class ModelPicker extends LitElement {
+export class ModelPicker extends LocalizedLitElement {
   @property() override title = "Select Model";
   /** Enabled-mode rows: the session's pickable models, pre-labeled by the host. */
   @property({ attribute: false }) options: CommandOption[] = [];
@@ -153,10 +155,10 @@ export class ModelPicker extends LitElement {
       >
         <header>
           <strong>${this.title}</strong>
-          <button aria-label="Close" @click=${() => this.onCancel?.()}>×</button>
+          <button aria-label=${t("Close")} @click=${() => this.onCancel?.()}>×</button>
         </header>
-        <div class="scope-toggle" role="group" aria-label="Model scope">
-          ${this.renderScopeToggleButton("enabled", "Enabled")}
+        <div class="scope-toggle" role="group" aria-label=${t("Model scope")}>
+          ${this.renderScopeToggleButton("enabled", t("Enabled"))}
           ${this.renderScopeToggleButton("all", "All models")}
         </div>
         ${!this.modelScopeEditable ? html`
@@ -173,12 +175,12 @@ export class ModelPicker extends LitElement {
         <div
           class="options"
           role="region"
-          aria-label=${this.mode === "all" ? "All models in catalog order" : "Enabled models"}
+          aria-label=${this.mode === "all" ? t("All models in catalog order") : t("Enabled models")}
           tabindex="0"
           aria-busy=${this.membershipChangePending ? "true" : "false"}
         >
           ${this.mode === "all" ? this.renderCatalogList() : this.renderEnabledList()}
-          ${rows.length === 0 ? html`<div class="empty">No matching options</div>` : null}
+          ${rows.length === 0 ? html`<div class="empty">${t("No matching options")}</div>` : null}
         </div>
       </modal-surface>
     `;
@@ -229,7 +231,7 @@ export class ModelPicker extends LitElement {
 
   private renderToggleAllButton(): TemplateResult {
     const plan = modelCatalogToggleAllPlan(this.catalog, this.selectedValue);
-    const label = plan.mode === "all" ? "Select all" : "Deselect all";
+    const label = plan.mode === "all" ? t("Select all") : t("Deselect all");
     return html`
       <button
         class="toggle-all"

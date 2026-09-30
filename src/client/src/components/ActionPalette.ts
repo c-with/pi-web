@@ -1,4 +1,6 @@
-import { LitElement, css, html, nothing, type PropertyValues } from "lit";
+import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
+import { t } from "../i18n/i18n";
+import { css, html, nothing, type PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import type { AppAction } from "../actions";
 import { formatShortcut } from "../keyboardShortcuts";
@@ -8,7 +10,7 @@ import { scrollWhenSelected } from "./scrollWhenSelected";
 import { paletteStyles } from "./paletteStyles";
 
 @customElement("action-palette")
-export class ActionPalette extends LitElement {
+export class ActionPalette extends LocalizedLitElement {
   @property({ attribute: false }) actions: AppAction[] = [];
   @property({ attribute: false }) onRun?: (action: AppAction) => void;
   @property({ attribute: false }) onCancel?: () => void;
@@ -27,7 +29,7 @@ export class ActionPalette extends LitElement {
         <header>
           <input
             .value=${this.queryText}
-            placeholder="Search actions..."
+            placeholder=${t("Search actions...")}
             @input=${(event: Event) => {
               if (event.target instanceof HTMLInputElement) {
                 this.queryText = event.target.value;
@@ -35,7 +37,7 @@ export class ActionPalette extends LitElement {
               }
             }}
           >
-          <button title="Close" aria-label="Close" @click=${() => this.onCancel?.()}>×</button>
+          <button title=${t("Close")} aria-label=${t("Close")} @click=${() => this.onCancel?.()}>×</button>
         </header>
         <div class="options">
           ${actions.length === 0 ? html`<div class="empty">No actions found.</div>` : actions.map((action, index) => html`

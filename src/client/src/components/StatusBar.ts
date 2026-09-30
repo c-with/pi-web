@@ -1,4 +1,6 @@
-import { LitElement, html } from "lit";
+import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
+import { t } from "../i18n/i18n";
+import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import type { SessionStatus } from "../api";
 import { formatCost, formatTokenCount } from "../utils/format";
@@ -11,7 +13,7 @@ export interface StatusBarWarningControlContent {
 
 export function statusBarWarningControlContent(count: number, expanded: boolean): StatusBarWarningControlContent | undefined {
   if (!Number.isInteger(count) || count <= 0) return undefined;
-  const warningText = `${String(count)} ${count === 1 ? "warning" : "warnings"}`;
+  const warningText = t(count === 1 ? "session.warningCount.one" : "session.warningCount.other", { count });
   return {
     countText: String(count),
     accessibleLabel: expanded ? `Minimise ${warningText}` : `Show ${warningText} in the warning area`,
@@ -19,7 +21,7 @@ export function statusBarWarningControlContent(count: number, expanded: boolean)
 }
 
 @customElement("status-bar")
-export class StatusBar extends LitElement {
+export class StatusBar extends LocalizedLitElement {
   @property({ attribute: false }) status?: SessionStatus;
   @property({ type: Number }) warningCount = 0;
   @property({ type: Boolean }) warningsExpanded = false;
@@ -31,7 +33,7 @@ export class StatusBar extends LitElement {
 
   override render() {
     const status = this.status;
-    if (status === undefined) return html`<div class="bar muted">No session status yet</div>`;
+    if (status === undefined) return html`<div class="bar muted">${t("No session status yet")}</div>`;
     const context = status.contextUsage;
     const contextText = context
       ? context.percent == null

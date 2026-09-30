@@ -1,8 +1,9 @@
-import { LitElement, css, html } from "lit";
+import { LocalizedLitElement } from "../../i18n/LocalizedLitElement";
+import { css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("app-refresh-control")
-export class AppRefreshControl extends LitElement {
+export class AppRefreshControl extends LocalizedLitElement {
   @property({ attribute: false }) onReload?: () => void;
 
   override render() {

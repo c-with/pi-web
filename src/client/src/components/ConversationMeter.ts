@@ -1,15 +1,17 @@
-import { LitElement, css, html } from "lit";
+import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
+import { t } from "../i18n/i18n";
+import { css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("conversation-meter")
-export class ConversationMeter extends LitElement {
+export class ConversationMeter extends LocalizedLitElement {
   @property({ type: Number }) positionPercent = 0;
   @property({ type: Number }) loadedPercent = 100;
 
   override render() {
     const position = clampPercent(this.positionPercent);
     const loaded = clampPercent(this.loadedPercent);
-    const label = `Message position: about ${String(Math.round(position))}% through conversation. ${String(Math.round(loaded))}% of messages loaded.`;
+    const label = t("conversation.position", { position: Math.round(position), loaded: Math.round(loaded) });
     return html`
       <div
         class="meter"

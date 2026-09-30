@@ -1,4 +1,6 @@
-import { LitElement, css, html } from "lit";
+import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
+import { t } from "../i18n/i18n";
+import { css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { writeClipboardText } from "../clipboard";
 import type { ToolExecutionPart } from "./shared";
@@ -11,7 +13,7 @@ interface ToolTarget {
 }
 
 @customElement("tool-execution-view")
-export class ToolExecutionView extends LitElement {
+export class ToolExecutionView extends LocalizedLitElement {
   @property({ attribute: false }) execution: ToolExecutionPart | undefined;
   @state() private showFullDiff = false;
   @state() private copied = false;
@@ -48,7 +50,7 @@ export class ToolExecutionView extends LitElement {
 
         ${previewMismatch ? html`<p class="notice">Applied diff differs from the preview.</p>` : null}
         ${errorText === undefined || errorText === "" ? null : html`<pre class="error-text">${errorText}</pre>`}
-        ${visibleDiff === undefined ? this.renderTextBody(bodyText, execution.status === "error", target) : this.renderDiffBody(visibleDiff, actualDiff === undefined ? "Preview diff" : "Applied diff", target)}
+        ${visibleDiff === undefined ? this.renderTextBody(bodyText, execution.status === "error", target) : this.renderDiffBody(visibleDiff, actualDiff === undefined ? t("Preview diff") : t("Applied diff"), target)}
       </section>
     `;
   }
@@ -73,7 +75,7 @@ export class ToolExecutionView extends LitElement {
     if ((text === undefined || text === "") && target === undefined) return null;
     return html`
       <details class="text-body" ?open=${open}>
-        <summary>Details</summary>
+        <summary>${t("Details")}</summary>
         ${this.renderExpandedTarget(target)}
         ${text === undefined || text === "" ? null : html`
           <div class="detail-result">
@@ -98,7 +100,7 @@ export class ToolExecutionView extends LitElement {
         ${this.renderExpandedTarget(target)}
         <div class="diff-toolbar">
           <span>${truncated ? `Showing ${String(visibleLines.length)} of ${String(lines.length)} lines` : "Full diff"}</span>
-          <button type="button" @click=${() => { void this.copyDiff(diff); }}>${this.copied ? "Copied" : "Copy diff"}</button>
+          <button type="button" @click=${() => { void this.copyDiff(diff); }}>${this.copied ? t("Copied") : t("Copy diff")}</button>
         </div>
         <pre class="diff" aria-label=${label}><code class="diff-content">${visibleLines.map((line) => html`<span class=${diffLineClass(line)}>${line}</span>`)}</code></pre>
         ${truncated ? html`

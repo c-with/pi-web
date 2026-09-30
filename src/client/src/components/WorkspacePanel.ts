@@ -1,4 +1,5 @@
-import { LitElement, html, type TemplateResult } from "lit";
+import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
+import { html, type TemplateResult } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 import type { Workspace } from "../api";
 import type { QualifiedContributionId, QualifiedWorkspacePanelContribution, WorkspacePanelContext } from "../plugins/types";
@@ -14,7 +15,7 @@ export interface WorkspacePanelEmptyState {
 type WorkspacePanelBadge = string | number | TemplateResult | undefined;
 
 @customElement("workspace-panel")
-export class WorkspacePanel extends LitElement {
+export class WorkspacePanel extends LocalizedLitElement {
   @property({ attribute: false }) workspace: Workspace | undefined;
   @property({ attribute: false }) panelContext: WorkspacePanelContext | undefined;
   @property({ attribute: false }) emptyState: WorkspacePanelEmptyState | undefined;

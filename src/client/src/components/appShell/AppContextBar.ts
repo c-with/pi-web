@@ -1,4 +1,6 @@
-import { LitElement, css, html } from "lit";
+import { LocalizedLitElement } from "../../i18n/LocalizedLitElement";
+import { t } from "../../i18n/i18n";
+import { css, html } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 import type { Machine, Project, SessionInfo, Workspace } from "../../api";
 import { browserGatewayDisplayUrl, machineIconUrl } from "../../instanceIdentity";
@@ -7,7 +9,7 @@ import { renderNavigationMenuIcon } from "../tabIcons";
 import type { NavigationSection } from "../../appShell/navigationState";
 
 @customElement("app-context-bar")
-export class AppContextBar extends LitElement {
+export class AppContextBar extends LocalizedLitElement {
   @property({ attribute: false }) machines: Machine[] = [];
   @property({ attribute: false }) machine?: Machine;
   /** PWA display mode: surfaces the machine location identity in the breadcrumb. */
@@ -54,8 +56,8 @@ export class AppContextBar extends LitElement {
     const workspaceLabel = workspaceContextLabel(this.workspace);
     const sessionLabel = sessionContextLabel(this.session);
     return html`
-      <nav class=${this.contextBarClass()} aria-label="Current location">
-        <span class="context-bar-label">Location</span>
+      <nav class=${this.contextBarClass()} aria-label=${t("Current location")}>
+        <span class="context-bar-label">${t("Location")}</span>
         <ol class="context-items" @scroll=${this.onContextScroll}>
           ${showMachineChip ? html`
             <li class="context-item">
@@ -79,7 +81,7 @@ export class AppContextBar extends LitElement {
           </li>
           <li class="context-item">
             <button type="button" class=${this.workspace === undefined ? "context-chip empty" : "context-chip"} title=${workspaceContextTitle(this.workspace)} aria-label=${`Workspace: ${workspaceLabel}. Open workspace selection.`} @click=${() => { this.onOpenSection?.("workspaces"); }}>
-              <span class="context-kind">Workspace</span>
+              <span class="context-kind">${t("Workspace")}</span>
               <span class="context-value">${workspaceLabel}</span>
             </button>
           </li>
@@ -96,7 +98,7 @@ export class AppContextBar extends LitElement {
   }
 
   private renderMachineChipContent(machine: Machine | undefined, locationIndicator: boolean) {
-    if (machine === undefined) return html`<span class="context-value">No machine</span>`;
+    if (machine === undefined) return html`<span class="context-value">${t("No machine")}</span>`;
     // Browser mode keeps the chip a plain machine picker; the location identity
     // (favicon and host) only shows where the browser chrome does not.
     if (!locationIndicator) return html`<span class="context-value">${machineSelectionLabel(machine)}</span>`;
@@ -115,7 +117,7 @@ export class AppContextBar extends LitElement {
   private renderActionsButton() {
     if (this.onShowActions === undefined) return null;
     return html`
-      <button type="button" class="context-action-button" title="Show Actions" aria-label="Show Actions" @click=${(event: MouseEvent) => { event.stopPropagation(); this.onShowActions?.(); }}>
+      <button type="button" class="context-action-button" title=${t("Show Actions")} aria-label=${t("Show Actions")} @click=${(event: MouseEvent) => { event.stopPropagation(); this.onShowActions?.(); }}>
         <svg class="context-action-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path d="M13 2 4 14h7l-1 8 10-13h-7V2Z"></path>
         </svg>
@@ -203,7 +205,7 @@ function displayMachine(machine: Machine | undefined, machines: readonly Machine
 }
 
 function machineContextLabel(machine: Machine | undefined): string {
-  return machine?.name ?? "No machine";
+  return machine?.name ?? t("No machine");
 }
 
 /** The plain picker label used in browser mode, where the chip carries no location identity. */

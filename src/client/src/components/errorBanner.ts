@@ -1,4 +1,5 @@
 import { html, type TemplateResult } from "lit";
+import { t } from "../i18n/i18n";
 import type { ServerNoticeSeverity } from "../../../shared/apiTypes";
 
 /**
@@ -16,8 +17,8 @@ export function errorBanner(error: string, onDismiss: () => void, severity: Serv
   </div>`;
 }
 
-function bannerSeverityLabel(severity: ServerNoticeSeverity): "Info" | "Warning" | "Error" {
-  if (severity === "error") return "Error";
-  if (severity === "warning") return "Warning";
-  return "Info";
+function bannerSeverityLabel(severity: ServerNoticeSeverity): string {
+  if (severity === "error") return t("Error");
+  if (severity === "warning") return t("Warning");
+  return t("Info");
 }

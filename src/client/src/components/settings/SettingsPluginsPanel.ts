@@ -1,4 +1,6 @@
-import { css, html, LitElement, nothing, type TemplateResult } from "lit";
+import { LocalizedLitElement } from "../../i18n/LocalizedLitElement";
+import { t } from "../../i18n/i18n";
+import { css, html, nothing, type TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import type { PiWebConfigResponse, PiWebPluginInfo, PiWebPluginsResponse } from "../../api";
 import { PI_WEB_PLUGIN_RECOVERY_COMMANDS } from "../../../../shared/pluginRecoveryCommands";
@@ -9,7 +11,7 @@ import type { SettingsNotice } from "./SettingsPanelFrame";
 export type SettingsPluginRow = PiWebPluginInfo & { configOnly: boolean; editable: boolean };
 
 @customElement("settings-plugins-panel")
-export class SettingsPluginsPanel extends LitElement {
+export class SettingsPluginsPanel extends LocalizedLitElement {
   @property({ attribute: false }) pluginsResponse: PiWebPluginsResponse | undefined;
   @property({ attribute: false }) configResponse: PiWebConfigResponse | undefined;
   @property({ type: Boolean }) loading = false;
@@ -96,7 +98,7 @@ export class SettingsPluginsPanel extends LitElement {
     if (showTrustedCodeWarning) {
       notices.push({
         type: "security",
-        content: html`<strong>Trusted code warning:</strong> PI WEB plugins and Pi packages can run with your user permissions. Enable plugins only from sources you trust.`,
+        content: html`<strong>${t("Trusted code warning:")}</strong> PI WEB plugins and Pi packages can run with your user permissions. Enable plugins only from sources you trust.`,
       });
     }
     return notices;
@@ -151,11 +153,11 @@ export class SettingsPluginsPanel extends LitElement {
           ${this.renderPluginStatuses(plugin)}
           ${plugin.server?.message === undefined ? nothing : html`<small class="diagnostic">${plugin.server.message}</small>`}
           ${plugin.server?.health?.message === undefined ? nothing : html`<small class="diagnostic">Health: ${plugin.server.health.message}</small>`}
-          ${plugin.server === undefined || plugin.required === true ? nothing : html`<small class="command">Offline disable: <code>${plugin.server.disableCommand}</code></small>`}
+          ${plugin.server === undefined || plugin.required === true ? nothing : html`<small class="command">${t("Offline disable:")} <code>${plugin.server.disableCommand}</code></small>`}
         </div>
         <label class="toggle">
           <input type="checkbox" .checked=${plugin.enabled} ?disabled=${this.saving || this.configResponse === undefined || !plugin.editable} @change=${(event: Event) => { void this.togglePlugin(plugin, event); }}>
-          <span>${plugin.required === true ? "Required" : "Enabled"}</span>
+          <span>${plugin.required === true ? t("Required") : t("Enabled")}</span>
         </label>
       </article>
     `;
@@ -166,9 +168,9 @@ export class SettingsPluginsPanel extends LitElement {
     return html`
       <div class="status-list" aria-label=${`${plugin.id} plugin states`}>
         ${server === undefined ? html`<span class="status neutral">${plugin.configOnly ? "Configured only" : "Browser only"}</span>` : html`<span class=${`status ${serverStateTone(server.state)}`}>${serverStateLabel(server.state)}</span>`}
-        ${plugin.conflict ? html`<span class="status error">Conflict</span>` : nothing}
-        ${server?.staleRevision === true ? html`<span class="status warning">Stale revision</span>` : nothing}
-        ${server?.restartRequired === true ? html`<span class="status warning">Restart required</span>` : nothing}
+        ${plugin.conflict ? html`<span class="status error">${t("Conflict")}</span>` : nothing}
+        ${server?.staleRevision === true ? html`<span class="status warning">${t("Stale revision")}</span>` : nothing}
+        ${server?.restartRequired === true ? html`<span class="status warning">${t("Restart required")}</span>` : nothing}
         ${server?.health === undefined ? nothing : html`<span class=${`status ${healthTone(server.health.status)}`}>Health ${server.health.status}</span>`}
       </div>
     `;
@@ -180,7 +182,7 @@ export class SettingsPluginsPanel extends LitElement {
     const recovery = responseRecovery ?? (this.recoveryCommandsSupported ? PI_WEB_PLUGIN_RECOVERY_COMMANDS : undefined);
     if (recovery === undefined) return nothing;
     return html`
-      <aside class="recovery" aria-label="Offline server-plugin recovery commands">
+      <aside class="recovery" aria-label=${t("Offline server-plugin recovery commands")}>
         <strong>Offline recovery on ${this.targetLabel}</strong>
         <small>These commands edit config without contacting sessiond or importing plugins. They never include machine credentials.</small>
         <code>${recovery.showSafeStart}</code>
@@ -266,12 +268,12 @@ export function settingsPluginRows(
 
 function serverStateLabel(state: NonNullable<PiWebPluginInfo["server"]>["state"]): string {
   switch (state) {
-    case "active": return "Active";
-    case "failed": return "Failed";
-    case "incompatible": return "Incompatible";
-    case "disabled": return "Disabled";
-    case "missing": return "Not active";
-    case "unknown": return "Active state unavailable";
+    case "active": return t("Active");
+    case "failed": return t("Failed");
+    case "incompatible": return t("Incompatible");
+    case "disabled": return t("Disabled");
+    case "missing": return t("Not active");
+    case "unknown": return t("Active state unavailable");
   }
 }
 

@@ -1,4 +1,6 @@
-import { css, html, LitElement, type TemplateResult } from "lit";
+import { LocalizedLitElement } from "../../i18n/LocalizedLitElement";
+import { t } from "../../i18n/i18n";
+import { css, html, type TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import type { PiWebConfigResponse, PiWebConfigValues } from "../../api";
 import "./SettingsPanelFrame";
@@ -6,7 +8,7 @@ import type { SettingsNotice } from "./SettingsPanelFrame";
 import { askUserConfigPatch, spawnSessionsConfigPatch, subsessionsConfigPatch } from "./settingsSessiondConfig";
 
 @customElement("settings-sessiond-panel")
-export class SettingsSessiondPanel extends LitElement {
+export class SettingsSessiondPanel extends LocalizedLitElement {
   @property({ attribute: false }) configResponse: PiWebConfigResponse | undefined;
   @property({ type: Boolean }) loading = false;
   @property({ type: Boolean }) saving = false;
@@ -38,13 +40,13 @@ export class SettingsSessiondPanel extends LitElement {
       >
         ${config === undefined ? this.renderUnavailableConfigState() : html`
           <div class="config-path-card">
-            <span>Config file</span>
+            <span>${t("Config file")}</span>
             <code>${config.path}</code>
           </div>
           <div class="field">
             <span class="field-heading">
               <span>Allow agents to start sessions</span>
-              ${spawnOverridden ? html`<span class="override-badge">environment override</span>` : null}
+              ${spawnOverridden ? html`<span class="override-badge">${t("environment override")}</span>` : null}
             </span>
             <label class="toggle">
               <input
@@ -60,7 +62,7 @@ export class SettingsSessiondPanel extends LitElement {
           <div class="field">
             <span class="field-heading">
               <span>Allow agents to start tracked subsessions</span>
-              ${subsessionsOverridden ? html`<span class="override-badge">environment override</span>` : null}
+              ${subsessionsOverridden ? html`<span class="override-badge">${t("environment override")}</span>` : null}
             </span>
             <label class="toggle">
               <input
@@ -76,7 +78,7 @@ export class SettingsSessiondPanel extends LitElement {
           <div class="field">
             <span class="field-heading">
               <span>Allow agents to ask questions</span>
-              ${askUserOverridden ? html`<span class="override-badge">environment override</span>` : null}
+              ${askUserOverridden ? html`<span class="override-badge">${t("environment override")}</span>` : null}
             </span>
             <label class="toggle">
               <input
@@ -93,9 +95,9 @@ export class SettingsSessiondPanel extends LitElement {
           <section class="effective-card" aria-label="Desired session daemon configuration summary">
             <h3>Desired after environment overrides</h3>
             <dl>
-              <div><dt>Spawn sessions</dt><dd>${effectiveSpawn ? "Enabled" : html`<span class="muted">Disabled</span>`}</dd></div>
-              <div><dt>Subsessions</dt><dd>${effectiveSubsessions ? "Enabled" : html`<span class="muted">Disabled</span>`}</dd></div>
-              <div><dt>Ask questions</dt><dd>${effectiveAskUser ? "Enabled" : html`<span class="muted">Disabled</span>`}</dd></div>
+              <div><dt>Spawn sessions</dt><dd>${effectiveSpawn ? t("Enabled") : html`<span class="muted">${t("Disabled")}</span>`}</dd></div>
+              <div><dt>Subsessions</dt><dd>${effectiveSubsessions ? t("Enabled") : html`<span class="muted">${t("Disabled")}</span>`}</dd></div>
+              <div><dt>Ask questions</dt><dd>${effectiveAskUser ? t("Enabled") : html`<span class="muted">${t("Disabled")}</span>`}</dd></div>
             </dl>
           </section>
         `}
@@ -111,7 +113,7 @@ export class SettingsSessiondPanel extends LitElement {
   }
 
   private renderUnavailableConfigState(): TemplateResult {
-    return html`<div class="loading-card">${this.loading ? "Loading configuration…" : "Configuration is unavailable. Reload to try again."}</div>`;
+    return html`<div class="loading-card">${this.loading ? t("Loading configuration…") : "Configuration is unavailable. Reload to try again."}</div>`;
   }
 
   private async toggleSpawnSessions(event: Event): Promise<void> {

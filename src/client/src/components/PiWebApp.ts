@@ -1,4 +1,6 @@
-import { LitElement, html, type TemplateResult } from "lit";
+import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
+import { t } from "../i18n/i18n";
+import { html, type TemplateResult } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 import { markdownWorkspaceContext, type WorkspaceFileOpenRequest } from "../formatting/workspaceLinks";
@@ -138,7 +140,7 @@ interface SessionCleanupDialogState {
 }
 
 @customElement("pi-web-app")
-export class PiWebApp extends LitElement {
+export class PiWebApp extends LocalizedLitElement {
   @state() private state: AppState = initialAppState();
   private readonly browserErrors = new BrowserErrorReporter(() => this.state, (patch) => { this.setState(patch); });
   @query("chat-view") private chatView?: ChatView;
@@ -2098,7 +2100,7 @@ export class PiWebApp extends LitElement {
     const project = this.state.selectedProject;
     if (this.state.isLoadingProjects) {
       return {
-        title: "Loading projects…",
+        title: t("Loading projects…"),
         body: "Looking for projects you have added to PI WEB.",
       };
     }
@@ -2165,11 +2167,11 @@ export class PiWebApp extends LitElement {
   private sessionEmptyMessage(): string {
     const error = this.contentError();
     if (error !== "") return error;
-    if (this.state.isLoadingProjects) return "Loading projects…";
-    if (this.state.selectedWorkspace !== undefined) return "Select or start a session.";
-    if (this.state.selectedProject !== undefined) return "Select a workspace to start a session.";
-    if (this.state.projects.length === 0) return "Add a project to start a session.";
-    return "Select a project and workspace to start a session.";
+    if (this.state.isLoadingProjects) return t("Loading projects…");
+    if (this.state.selectedWorkspace !== undefined) return t("Select or start a session.");
+    if (this.state.selectedProject !== undefined) return t("Select a workspace to start a session.");
+    if (this.state.projects.length === 0) return t("Add a project to start a session.");
+    return t("Select a project and workspace to start a session.");
   }
 
   private mobilePanelBadge(panel: QualifiedWorkspacePanelContribution): unknown {
@@ -2332,7 +2334,7 @@ export class PiWebApp extends LitElement {
       id: "core:workspace.refresh-current",
       title: "Refresh Current Panel",
       shortcut: "mod+shift+r",
-      group: "Workspace",
+      group: t("Workspace"),
       enabled: this.state.selectedWorkspace !== undefined,
       run: () => this.refreshCurrentWorkspaceSurface(),
     }];
@@ -2344,7 +2346,7 @@ export class PiWebApp extends LitElement {
         id: "app.sessions.cleanup",
         title: "Clean Up Sessions",
         description: "Preview and manually clean up idle or archived sessions on the selected machine",
-        group: "Sessions",
+        group: t("Sessions"),
         run: () => { this.openSessionCleanupDialog(); },
       },
     ];
@@ -3467,7 +3469,7 @@ export class PiWebApp extends LitElement {
     return [
       {
         id: "navigation",
-        label: "Sessions",
+        label: t("Sessions"),
         icon: "navigation",
         className: "navigation-tab",
         ...(unreadCount === 0 ? {} : { badge: unreadCount, badgeLabel: `${String(unreadCount)} unread`, badgeTone: "unread" }),
@@ -3790,12 +3792,12 @@ function nextFrame(): Promise<void> {
 
 function thinkingDescription(level: string): string | undefined {
   switch (level) {
-    case "off": return "No reasoning";
-    case "minimal": return "Very brief reasoning (~1k tokens)";
-    case "low": return "Light reasoning (~2k tokens)";
-    case "medium": return "Moderate reasoning (~8k tokens)";
-    case "high": return "Deep reasoning (~16k tokens)";
-    case "xhigh": return "Maximum reasoning (~32k tokens)";
+    case "off": return t("No reasoning");
+    case "minimal": return t("Very brief reasoning (~1k tokens)");
+    case "low": return t("Light reasoning (~2k tokens)");
+    case "medium": return t("Moderate reasoning (~8k tokens)");
+    case "high": return t("Deep reasoning (~16k tokens)");
+    case "xhigh": return t("Maximum reasoning (~32k tokens)");
     default: return undefined; // unknown level from a newer pi: no description
   }
 }
