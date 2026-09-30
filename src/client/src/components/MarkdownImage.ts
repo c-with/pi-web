@@ -4,7 +4,11 @@ import { customElement, property, state } from "lit/decorators.js";
 import type { ImageDimensions } from "../../../shared/sessionMedia";
 import { readMarkdownImageDimensions, rememberMarkdownImageDimensions } from "../formatting/markdownImageDimensions";
 import { TransientChoiceMemory } from "../formatting/transientChoiceMemory";
+<<<<<<< HEAD
 import "./ImagePresentation";
+=======
+import { t } from "../i18n/i18n";
+>>>>>>> 526990dd (feat(i18n): extract remaining UI strings, complete zh-CN coverage)
 
 const shownImageMemory = new TransientChoiceMemory<true>();
 
@@ -44,6 +48,7 @@ export class MarkdownImage extends LocalizedLitElement {
   };
 
   override render() {
+<<<<<<< HEAD
     return html`<pi-web-image-presentation
       .source=${!this.loadingDisabled && this.previewUrl !== "" && (!this.outside || this.approved) ? this.previewUrl : undefined}
       .dimensions=${this.dimensions} .onIntrinsicDimensions=${this.rememberDimensions}
@@ -52,6 +57,18 @@ export class MarkdownImage extends LocalizedLitElement {
       .description=${this.description} .label=${this.path}
       @image-request=${() => { this.showImage(); }}
     ></pi-web-image-presentation>`;
+=======
+    const visible = !this.outside || this.approved;
+    return html`
+      ${!visible ? html`<button class="placeholder" type="button" @click=${(event: MouseEvent) => { event.preventDefault(); event.stopPropagation(); this.approved = true; if (this.intentKey !== undefined) shownImageMemory.choose(this.intentKey, this.previewUrl, true); }}>
+        <span>${t("Show image")}</span><code>${this.path}</code>
+      </button>` : null}
+      ${visible && !this.failed ? html`<img src=${this.previewUrl} alt=${this.description} @error=${() => { this.failed = true; }} />` : null}
+      ${visible && this.failed ? html`<span role="status">${t("Image unavailable: the file may be missing, inaccessible, unsupported, or too large.")}</span>
+        <code>${this.path}</code>
+        <button type="button" @click=${(event: MouseEvent) => { event.preventDefault(); event.stopPropagation(); this.failed = false; }}>${t("Retry")}</button>` : null}
+    `;
+>>>>>>> 526990dd (feat(i18n): extract remaining UI strings, complete zh-CN coverage)
   }
 
   static override styles = css`

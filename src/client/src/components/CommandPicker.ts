@@ -37,7 +37,7 @@ export class CommandPicker extends LocalizedLitElement {
           <strong>${this.title}</strong>
           <button aria-label=${t("Close")} @click=${() => this.onCancel?.()}>×</button>
         </header>
-        ${this.searchable ? html`<input placeholder="Search" .value=${this.query} @input=${(event: Event) => { this.handleSearchInput(event); }}>` : null}
+        ${this.searchable ? html`<input placeholder=${t("Search")} .value=${this.query} @input=${(event: Event) => { this.handleSearchInput(event); }}>` : null}
         ${this.onSetDefault ? defaultPinHelp : nothing}
         <div class="options" tabindex="0">
           ${options.map((option, index) => {

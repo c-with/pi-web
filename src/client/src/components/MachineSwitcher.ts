@@ -124,7 +124,7 @@ export class MachineSwitcher extends LocalizedLitElement implements KeyboardNavi
             >⋯</button>
             ${actionsOpen ? html`
               <div class="machine-option-actions-panel" style=${this.actionMenuStyle} @click=${(event: MouseEvent) => { event.stopPropagation(); }}>
-                <button class="danger" title=${`Remove ${machine.name}`} @click=${() => { this.removeMachine(machine); }}>Remove</button>
+                <button class="danger" title=${t("Remove {name}", { name: machine.name })} @click=${() => { this.removeMachine(machine); }}>${t("Remove")}</button>
               </div>
             ` : null}
           </div>

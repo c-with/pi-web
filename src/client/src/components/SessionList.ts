@@ -418,7 +418,7 @@ export class SessionList extends LocalizedLitElement implements KeyboardNavigabl
           ${this.renderSelectionControls("current")}
           <div class="bulk-actions">
             <button ?disabled=${archivableSessions.length === 0} @click=${() => { this.archiveSelectedCurrent(); }}>${t("Archive")}</button>
-            <button ?disabled=${unreadSelectedSessions.length === 0} @click=${() => { this.markSelectedCurrentRead(); }}>Mark read</button>
+            <button ?disabled=${unreadSelectedSessions.length === 0} data-action="mark-read" @click=${() => { this.markSelectedCurrentRead(); }}>${t("Mark read")}</button>
           </div>
         </div>
       </div>
@@ -434,7 +434,7 @@ export class SessionList extends LocalizedLitElement implements KeyboardNavigabl
         <div class="bulk-row selecting">
           ${this.renderSelectionControls("archived")}
           <div class="bulk-actions">
-            <button class="danger" title=${t("Permanently delete selected archived sessions")} ?disabled=${selectedSessions.length === 0} @click=${() => { this.confirmDeleteSelectedArchived(); }}>Delete</button>
+            <button class="danger" title=${t("Permanently delete selected archived sessions")} ?disabled=${selectedSessions.length === 0} @click=${() => { this.confirmDeleteSelectedArchived(); }}>${t("Delete")}</button>
           </div>
         </div>
       </div>
@@ -452,8 +452,13 @@ export class SessionList extends LocalizedLitElement implements KeyboardNavigabl
   private renderSelectionControls(scope: SessionSelectionScope) {
     const selectedCount = this.selectedSessions(scope).length;
     return selectedCount === 0
+<<<<<<< HEAD
       ? html`<button @click=${() => { this.selectAllSessions(scope); }}>Select all</button>`
       : html`<button @click=${() => { this.clearSelection(scope); }}>Clear selected (${selectedCount})</button>`;
+=======
+      ? html`<button @click=${() => { this.selectVisibleSessions(visibleSessions); }}>${t("Select visible")}</button>`
+      : html`<button @click=${() => { this.clearSelection(scope); }}>${t("Clear selected ({count})", { count: selectedCount })}</button>`;
+>>>>>>> 526990dd (feat(i18n): extract remaining UI strings, complete zh-CN coverage)
   }
 
   private renderSession(row: SessionRow, scope: SessionSelectionScope, agentChildCount: number, agentOffset: number, agentAttention?: AgentAttention) {
@@ -489,6 +494,29 @@ export class SessionList extends LocalizedLitElement implements KeyboardNavigabl
         </div>
         <div class="action-menu">
           <button class="action-menu-toggle" title=${t("Session actions")} @click=${(event: MouseEvent) => { event.stopPropagation(); this.toggleMenu(session.id, event.currentTarget); }}>⋯</button>
+<<<<<<< HEAD
+=======
+          ${this.openMenuSessionId === session.id ? html`
+            <div class="action-menu-panel" style=${this.menuStyle}>
+              ${session.archived === true
+                ? html`
+                  <button title=${t("Restore session")} @click=${() => { this.openMenuSessionId = undefined; this.onRestore?.(session); }}>${t("Restore")}</button>
+                  <button class="danger" title=${t("Permanently delete archived session")} @click=${() => { this.openMenuSessionId = undefined; this.confirmDeleteArchived(session); }}>${t("Delete archived session")}</button>
+                `
+                : canDeleteTransient
+                  ? html`<button title=${t("Delete transient new session")} @click=${() => { this.openMenuSessionId = undefined; this.onDelete?.(session); }}>${t("Delete")}</button>`
+                  : html`
+                    ${this.unreadSessionIds.has(session.id) ? html`<button title=${t("Mark session as read")} @click=${() => { this.openMenuSessionId = undefined; this.onMarkRead?.(session); }}>${t("Mark as read")}</button>` : null}
+                    ${canArchive ? html`
+                      <button title=${t("Archive session")} @click=${() => { this.openMenuSessionId = undefined; this.onArchive?.(session); }}>${t("Archive")}</button>
+                      ${descendantCount > 0 ? html`<button title=${t("Archive this session and its descendants")} @click=${() => { this.openMenuSessionId = undefined; this.confirmArchiveWithDescendants(session, descendantCount); }}>${t("Archive with descendants ({count})", { count: descendantCount })}</button>` : null}
+                    ` : null}
+                    ${session.parentSessionPath !== undefined ? html`<button title=${t("Detach from parent")} @click=${() => { this.openMenuSessionId = undefined; this.onDetachParent?.(session); }}>${t("Detach from parent")}</button>` : null}
+                    ${canArchive ? html`<button title=${isSessionActive(this.statuses[session.id], this.activities[session.id]) ? t("Stop current session activity before reloading from disk") : t("Reload session from disk without refreshing Pi runtime resources")} ?disabled=${isSessionActive(this.statuses[session.id], this.activities[session.id])} @click=${() => { this.openMenuSessionId = undefined; this.onReload?.(session); }}>${t("Reload from disk")}</button>` : null}
+                  `}
+            </div>
+          ` : null}
+>>>>>>> 526990dd (feat(i18n): extract remaining UI strings, complete zh-CN coverage)
         </div>
       </div>
       ${agentChildCount > 0 ? html`<button class="agent-subsession-toggle" style=${`--agent-offset:${String(agentOffset)}px`} aria-expanded=${String(this.expandedAgentParents.has(session.id))} @click=${() => { this.toggleAgentParent(session.id); }}>${this.expandedAgentParents.has(session.id) ? "▾" : "▸"} Agent subsessions (${agentChildCount})${!this.expandedAgentParents.has(session.id) && agentAttention !== undefined ? renderActionActivityIndicator(agentAttention.kind, agentAttention.kind === "sending" ? "Sending subsession message" : "Agent subsessions active", agentAttention.unread ? "Unread subsession activity" : undefined) : null}</button>` : null}
@@ -597,18 +625,18 @@ export class SessionList extends LocalizedLitElement implements KeyboardNavigabl
 
   private confirmArchiveWithDescendants(session: SessionInfo, descendantCount: number): void {
     const noun = descendantCount === 1 ? "descendant session" : "descendant sessions";
-    if (confirm(`Archive “${sessionLabel(session)}” and ${String(descendantCount)} ${noun}?`)) this.onArchiveWithDescendants?.(session);
+    if (confirm(t("Archive “{session}” and {count} descendant {noun}?", { session: sessionLabel(session), count: descendantCount, noun }))) this.onArchiveWithDescendants?.(session);
   }
 
   private confirmDeleteArchived(session: SessionInfo): void {
-    if (confirm(`Permanently delete archived session “${sessionLabel(session)}”? This cannot be undone.`)) void this.onDeleteArchived?.(session);
+    if (confirm(t("Permanently delete archived session “{session}”? This cannot be undone.", { session: sessionLabel(session) }))) void this.onDeleteArchived?.(session);
   }
 
   private confirmDeleteSelectedArchived(): void {
     const archived = this.selectedSessions("archived");
     if (archived.length === 0) return;
     const noun = archived.length === 1 ? "archived session" : "archived sessions";
-    if (!confirm(`Permanently delete ${String(archived.length)} selected ${noun}? This cannot be undone.`)) return;
+    if (!confirm(t("Permanently delete {count} selected {noun}? This cannot be undone.", { count: archived.length, noun }))) return;
     this.selectedSessionIds = removeSessionIds(this.selectedSessionIds, archived.map((session) => session.id));
     void this.onDeleteArchivedMany?.(archived);
   }

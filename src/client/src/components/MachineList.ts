@@ -111,7 +111,7 @@ export class MachineList extends LocalizedLitElement implements KeyboardNavigabl
         >⋯</button>
         ${open ? html`
           <div class="action-menu-panel machine-menu-panel" id=${menuId} style=${this.menuStyle} @click=${(event: MouseEvent) => { event.stopPropagation(); }}>
-            <button class="danger" title=${`Remove ${machine.name}`} @click=${() => { this.removeMachine(machine); }}>Remove</button>
+            <button class="danger" title=${t("Remove {name}", { name: machine.name })} @click=${() => { this.removeMachine(machine); }}>${t("Remove")}</button>
           </div>
         ` : null}
       </div>

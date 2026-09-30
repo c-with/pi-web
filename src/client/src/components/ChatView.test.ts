@@ -76,7 +76,7 @@ describe("ChatView queued-message clear wiring", () => {
     view.status = queuedStatus([{ kind: "steer", text: "server queued" }]);
     view.onClearServerQueue = onClearServerQueue;
 
-    templateEventHandlerNearMarker(renderQueuedMessages(view), "Clear queue")(new Event("click"));
+    templateEventHandlerNearMarker(renderQueuedMessages(view), 'data-action="clear-queue"')(new Event("click"));
 
     expect(onClearServerQueue).toHaveBeenCalledOnce();
   });

@@ -95,9 +95,9 @@ export class SettingsGeneralPanel extends LocalizedLitElement {
       <section class="settings-card" aria-label=${t("Gateway server settings")}>
         <div class="card-heading">
           <h3>${t("Gateway server")}</h3>
-          <p>Host, port, and allowed hosts are saved in the gateway config. Address changes require the web service to restart before the running server binds to the new address.</p>
+          <p>${t("Host, port, and allowed hosts are saved in the gateway config. Address changes require the web service to restart before the running server binds to the new address.")}</p>
         </div>
-        ${config === undefined && this.loading ? html`<div class="loading-card">Loading gateway configuration…</div>` : html`
+        ${config === undefined && this.loading ? html`<div class="loading-card">${t("Loading gateway configuration…")}</div>` : html`
           <div class="config-path-card">
             <span>${t("Gateway config file")}</span>
             <code>${config?.path ?? "Unknown"}</code>
@@ -110,7 +110,7 @@ export class SettingsGeneralPanel extends LocalizedLitElement {
                 ${this.renderOverrideBadge("host")}
               </span>
               <input .value=${this.gatewayDraft.host} placeholder="127.0.0.1" autocomplete="off" spellcheck="false" @input=${(event: Event) => { this.updateGatewayDraft({ host: inputValue(event) }); }}>
-              <small>Address the web server should bind to. Leave empty to use PI WEB's default.</small>
+              <small>${t("Address the web server should bind to. Leave empty to use PI WEB's default.")}</small>
             </label>
 
             <label class="field">
@@ -119,7 +119,7 @@ export class SettingsGeneralPanel extends LocalizedLitElement {
                 ${this.renderOverrideBadge("port")}
               </span>
               <input .value=${this.gatewayDraft.port} inputmode="numeric" pattern="[0-9]*" placeholder="8504" autocomplete="off" @input=${(event: Event) => { this.updateGatewayDraft({ port: inputValue(event) }); }}>
-              <small>TCP port from 1 to 65535. Leave empty to use PI WEB's default.</small>
+              <small>${t("TCP port from 1 to 65535. Leave empty to use PI WEB's default.")}</small>
             </label>
 
             <div class="field">
@@ -132,7 +132,7 @@ export class SettingsGeneralPanel extends LocalizedLitElement {
                 <option value="all">${t("Allow every host")}</option>
               </select>
               <textarea .value=${this.gatewayDraft.allowedHostsText} ?disabled=${this.gatewayDraft.allowedHostsMode === "all"} rows="4" placeholder="example.local&#10;192.168.1.20" spellcheck="false" @input=${(event: Event) => { this.updateGatewayDraft({ allowedHostsText: textAreaValue(event) }); }}></textarea>
-              <small>Enter one host per line, or choose “Allow every host” to write <code>true</code>.</small>
+              <small>${t("Enter one host per line, or choose Allow every host to write true.")}</small>
             </div>
 
             ${this.renderGatewayEffectiveConfig()}
@@ -167,7 +167,7 @@ export class SettingsGeneralPanel extends LocalizedLitElement {
                 <span>${t("External filesystem roots")}</span>
               </span>
               <textarea .value=${this.machineDraft.allowedPathsText} rows="4" placeholder="~/SDKs&#10;/opt/reference" spellcheck="false" @input=${(event: Event) => { this.updateMachineDraft({ allowedPathsText: textAreaValue(event) }); }}></textarea>
-              <small>Allowlist for absolute <code>@</code> completions and file explorer reads outside a workspace on ${this.targetLabel}. Enter one absolute path, Windows absolute path, or <code>~</code>-prefixed path per line. Leave empty to deny external paths by default.</small>
+              <small>${t("Allowlist for absolute @ completions and file explorer reads outside a workspace on {target}. Enter one absolute path, Windows absolute path, or ~-prefixed path per line. Leave empty to deny external paths by default.", { target: this.targetLabel })}</small>
             </label>
 
             <label class="field">

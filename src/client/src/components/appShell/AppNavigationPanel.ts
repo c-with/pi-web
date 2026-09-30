@@ -141,7 +141,7 @@ export class AppNavigationPanel extends LocalizedLitElement {
   override render() {
     return html`
       <header>
-        <strong>PI WEB</strong>
+        <strong>${t("PI WEB")}</strong>
         <machine-switcher
           .machines=${this.machines}
           .selected=${this.selectedMachine}
@@ -155,7 +155,7 @@ export class AppNavigationPanel extends LocalizedLitElement {
         ></machine-switcher>
         <div class="header-actions">
           ${this.refreshControl}
-          <button title=${t("Show Actions")} aria-label=${t("Show Actions")} @click=${() => { this.onShowActions?.(); }}>Actions</button>
+          <button title=${t("Show Actions")} aria-label=${t("Show Actions")} @click=${() => { this.onShowActions?.(); }}>${t("Actions")}</button>
         </div>
       </header>
       ${this.compact && shouldShowMachinesSection(this.machines) ? html`

@@ -35,14 +35,14 @@ export function extensionDialogCloseSummary(closed: ClosedExtensionDialog): stri
       const answer = closed.answer;
       // An answered close without an answer value breaks the wire contract;
       // the card still renders rather than crashing the transcript.
-      if (answer === undefined) return "Closed without an answer.";
-      if (typeof answer === "boolean") return `Answered: ${answer ? t("Yes") : t("No")}`;
-      return answer === "" ? "Answered with an empty response." : `Answered: ${answer}`;
+      if (answer === undefined) return t("Closed without an answer.");
+      if (typeof answer === "boolean") return t("Answered: {answer}", { answer: answer ? t("Yes") : t("No") });
+      return answer === "" ? t("Answered with an empty response.") : t("Answered: {answer}", { answer });
     }
-    case "cancelled": return "Dismissed without an answer.";
-    case "timeout": return "No answer was given before the dialog timed out.";
-    case "aborted": return "The run ended before this dialog was answered.";
-    case "session-ended": return "The session ended before this dialog was answered.";
+    case "cancelled": return t("Dismissed without an answer.");
+    case "timeout": return t("No answer was given before the dialog timed out.");
+    case "aborted": return t("The run ended before this dialog was answered.");
+    case "session-ended": return t("The session ended before this dialog was answered.");
   }
 }
 
@@ -153,9 +153,9 @@ export class ExtensionDialogCard extends LocalizedLitElement {
     return html`
       ${dialog.message === undefined ? null : html`<p class="dialog-message">${dialog.message}</p>`}
       <footer class="dialog-footer">
-        <button class="secondary-action" type="button" ?disabled=${this.closing} @click=${() => { this.cancelDialog(dialog); }}>Cancel</button>
-        <button class="secondary-action" type="button" ?disabled=${this.closing} @click=${() => { this.answerDialog(dialog, false); }}>No</button>
-        <button class="primary-action" type="button" ?disabled=${this.closing} @click=${() => { this.answerDialog(dialog, true); }}>Yes</button>
+        <button class="secondary-action" type="button" ?disabled=${this.closing} @click=${() => { this.cancelDialog(dialog); }}>${t("Cancel")}</button>
+        <button class="secondary-action" type="button" ?disabled=${this.closing} @click=${() => { this.answerDialog(dialog, false); }}>${t("No")}</button>
+        <button class="primary-action" type="button" ?disabled=${this.closing} @click=${() => { this.answerDialog(dialog, true); }}>${t("Yes")}</button>
       </footer>
     `;
   }
@@ -168,7 +168,7 @@ export class ExtensionDialogCard extends LocalizedLitElement {
         `)}
       </div>
       <footer class="dialog-footer">
-        <button class="secondary-action" type="button" ?disabled=${this.closing} @click=${() => { this.cancelDialog(dialog); }}>Cancel</button>
+        <button class="secondary-action" type="button" ?disabled=${this.closing} @click=${() => { this.cancelDialog(dialog); }}>${t("Cancel")}</button>
       </footer>
     `;
   }
@@ -188,7 +188,7 @@ export class ExtensionDialogCard extends LocalizedLitElement {
           @input=${(event: Event) => { this.changeInput(event); }}
         />
         <footer class="dialog-footer">
-          <button class="secondary-action" type="button" ?disabled=${this.closing} @click=${() => { this.cancelDialog(dialog); }}>Cancel</button>
+          <button class="secondary-action" type="button" ?disabled=${this.closing} @click=${() => { this.cancelDialog(dialog); }}>${t("Cancel")}</button>
           <button class="primary-action" type="submit" ?disabled=${this.closing}>${this.closing ? t("Sending…") : t("Send")}</button>
         </footer>
       </form>
@@ -204,7 +204,7 @@ export class ExtensionDialogCard extends LocalizedLitElement {
         </header>
         <p class="closed-summary">${extensionDialogCloseSummary(closed)}</p>
         <footer class="dialog-footer">
-          <button class="secondary-action" type="button" @click=${() => { this.dismissClosed(closed); }}>Dismiss</button>
+          <button class="secondary-action" type="button" @click=${() => { this.dismissClosed(closed); }}>${t("Dismiss")}</button>
         </footer>
       </article>
     `;

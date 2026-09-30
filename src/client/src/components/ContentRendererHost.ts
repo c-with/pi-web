@@ -155,6 +155,7 @@ export class ContentRendererHost extends LocalizedLitElement {
     const preview = !this.raw && active ? this.renderPreview() : undefined;
     const diagnostic = this.failure;
     const showingRaw = preview === undefined || diagnostic !== undefined;
+<<<<<<< HEAD
     const sourceClass = this.codeBlocks?.overflow === "wrap" ? "source-wrap" : "source-scroll";
     const choice = this.choices.find(({ id }) => id === this.selectedId);
     return html`<div class=${this.externalControls ? "" : "code-block-frame"}>
@@ -163,12 +164,18 @@ export class ContentRendererHost extends LocalizedLitElement {
           ? choice === undefined ? null : html`<span class="code-block-label" title=${choice.label}>${choice.label}</span>`
           : html`
           <select class="code-block-label" aria-label=${t("Diagram renderer")} @change=${(event: Event) => { if (event.target instanceof HTMLSelectElement) this.selectRenderer(event.target.value); }}>
+=======
+    return html`
+      ${this.externalControls ? null : html`<div class="controls" role="group" aria-label=${t("Diagram controls")}>
+        ${this.choices.length < 2 ? null : html`
+          <select aria-label=${t("Diagram renderer")} @change=${(event: Event) => { if (event.target instanceof HTMLSelectElement) this.selectRenderer(event.target.value); }}>
+>>>>>>> 526990dd (feat(i18n): extract remaining UI strings, complete zh-CN coverage)
             ${this.choices.map(({ id, label }) => html`<option value=${id} .selected=${id === this.selectedId}>${label}</option>`)}
           </select>
         `}
         ${this.renderer === undefined ? null : html`
           <button type="button" aria-controls="content" aria-pressed=${!showingRaw} @click=${() => { this.setRaw(false); }}>${this.renderer.renderMode === "automatic" ? t("Preview") : t("Render")}</button>
-          <button type="button" aria-controls="content" aria-pressed=${showingRaw} @click=${() => { this.setRaw(true); }}>Raw</button>
+          <button type="button" aria-controls="content" aria-pressed=${showingRaw} @click=${() => { this.setRaw(true); }}>${t("Raw")}</button>
         `}
         ${this.codeBlocks?.copy === false ? null : html`
           <button class="copy code-block-copy" type="button" title=${this.copyStatus} aria-label=${this.copyStatus} @click=${() => { void this.copy(); }}><span aria-hidden="true">${this.copyStatus === "Copied source" ? "✓" : "⧉"}</span></button>

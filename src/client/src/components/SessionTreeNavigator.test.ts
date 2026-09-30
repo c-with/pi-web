@@ -741,7 +741,7 @@ function renderNavigator(navigator: SessionTreeNavigator): TemplateResult {
 }
 
 function clickTreeNext(navigator: SessionTreeNavigator): void {
-  templateEventHandlerNearMarker(renderNavigator(navigator), ">Next</button>")(new Event("click"));
+  templateEventHandlerNearMarker(renderNavigator(navigator), 'data-action="continue"')(new Event("click"));
 }
 
 function componentProperty(navigator: SessionTreeNavigator, property: string): unknown {

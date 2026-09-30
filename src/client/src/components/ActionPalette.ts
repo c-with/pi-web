@@ -40,7 +40,7 @@ export class ActionPalette extends LocalizedLitElement {
           <button title=${t("Close")} aria-label=${t("Close")} @click=${() => this.onCancel?.()}>×</button>
         </header>
         <div class="options">
-          ${actions.length === 0 ? html`<div class="empty">No actions found.</div>` : actions.map((action, index) => html`
+          ${actions.length === 0 ? html`<div class="empty">${t("No actions found.")}</div>` : actions.map((action, index) => html`
             <button
               class=${`${index === this.selectedIndex ? "selected" : ""} ${action.enabled === false ? "disabled" : ""}`}
               ?disabled=${action.enabled === false}

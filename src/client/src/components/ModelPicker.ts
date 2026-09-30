@@ -163,12 +163,12 @@ export class ModelPicker extends LocalizedLitElement {
         </div>
         ${!this.modelScopeEditable ? html`
           <div class="scope-notice" role="status">
-            <strong>Project override</strong>
-            <span>Showing models from this workspace’s <code>.pi/settings.json</code>. Model availability selection is disabled.</span>
+            <strong>${t("Project override")}</strong>
+            <span>${t("Showing models from this workspace’s {file}. Model availability selection is disabled.", { file: ".pi/settings.json" })}</span>
           </div>
         ` : nothing}
         <div class="search-row">
-          <input class="search" aria-label="Search models" placeholder="Search" .value=${this.query} @input=${(event: Event) => { this.handleSearchInput(event); }}>
+          <input class="search" aria-label=${t("Search models")} placeholder=${t("Search")} .value=${this.query} @input=${(event: Event) => { this.handleSearchInput(event); }}>
           ${this.mode === "all" ? this.renderToggleAllButton() : nothing}
         </div>
         ${this.onSetDefault ? defaultPinHelp : nothing}

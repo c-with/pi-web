@@ -45,7 +45,7 @@ export class SettingsSessiondPanel extends LocalizedLitElement {
           </div>
           <div class="field">
             <span class="field-heading">
-              <span>Allow agents to start sessions</span>
+              <span>${t("Allow agents to start sessions")}</span>
               ${spawnOverridden ? html`<span class="override-badge">${t("environment override")}</span>` : null}
             </span>
             <label class="toggle">
@@ -55,13 +55,13 @@ export class SettingsSessiondPanel extends LocalizedLitElement {
                 ?disabled=${this.loading || this.saving || spawnOverridden}
                 @change=${(event: Event) => { void this.toggleSpawnSessions(event); }}
               >
-              <span>Enable the <code>spawn_session</code> tool</span>
+              <span>${t("Enable the {tool} tool", { tool: "spawn_session" })}</span>
             </label>
-            <small>When enabled, LLMs can start new sessions, constrained to a workspace (any worktree) of the same registered project so every spawned session stays visible here. On by default.</small>
+            <small>${t("When enabled, LLMs can start new sessions, constrained to a workspace (any worktree) of the same registered project so every spawned session stays visible here. On by default.")}</small>
           </div>
           <div class="field">
             <span class="field-heading">
-              <span>Allow agents to start tracked subsessions</span>
+              <span>${t("Allow agents to start tracked subsessions")}</span>
               ${subsessionsOverridden ? html`<span class="override-badge">${t("environment override")}</span>` : null}
             </span>
             <label class="toggle">
@@ -71,33 +71,33 @@ export class SettingsSessiondPanel extends LocalizedLitElement {
                 ?disabled=${this.loading || this.saving || subsessionsOverridden || !effectiveSpawn}
                 @change=${(event: Event) => { void this.toggleSubsessions(event); }}
               >
-              <span>Enable the <code>spawn_subsession</code> tools</span>
+              <span>${t("Enable the {tool} tools", { tool: "spawn_subsession" })}</span>
             </label>
-            <small>Agents can start child sessions they stay attached to (<code>spawn_subsession</code>, <code>list_subsessions</code>, <code>check_subsession</code>, <code>read_subsession</code>) and are notified when a child finishes. Requires "Allow agents to start sessions". On by default.</small>
+            <small>${t("Agents can start child sessions they stay attached to and are notified when a child finishes. Requires Allow agents to start sessions. On by default.")}</small>
           </div>
           <div class="field">
             <span class="field-heading">
-              <span>Allow agents to ask questions</span>
+              <span>${t("Allow agents to ask questions")}</span>
               ${askUserOverridden ? html`<span class="override-badge">${t("environment override")}</span>` : null}
             </span>
             <label class="toggle">
               <input
                 type="checkbox"
-                aria-label="Enable Ask Questions"
+                aria-label=${t("Enable Ask Questions")}
                 .checked=${effectiveAskUser}
                 ?disabled=${this.loading || this.saving || askUserOverridden}
                 @change=${(event: Event) => { void this.toggleAskUser(event); }}
               >
-              <span>Enable the <code>ask_user</code> tool</span>
+              <span>${t("Enable the {tool} tool", { tool: "ask_user" })}</span>
             </label>
-            <small>Agents can post a structured question form and pause until the user responds. On by default.</small>
+            <small>${t("Agents can post a structured question form and pause until the user responds. On by default.")}</small>
           </div>
-          <section class="effective-card" aria-label="Desired session daemon configuration summary">
-            <h3>Desired after environment overrides</h3>
+          <section class="effective-card" aria-label=${t("Desired session daemon configuration summary")}>
+            <h3>${t("Desired after environment overrides")}</h3>
             <dl>
-              <div><dt>Spawn sessions</dt><dd>${effectiveSpawn ? t("Enabled") : html`<span class="muted">${t("Disabled")}</span>`}</dd></div>
-              <div><dt>Subsessions</dt><dd>${effectiveSubsessions ? t("Enabled") : html`<span class="muted">${t("Disabled")}</span>`}</dd></div>
-              <div><dt>Ask questions</dt><dd>${effectiveAskUser ? t("Enabled") : html`<span class="muted">${t("Disabled")}</span>`}</dd></div>
+              <div><dt>${t("Spawn sessions")}</dt><dd>${effectiveSpawn ? t("Enabled") : html`<span class="muted">${t("Disabled")}</span>`}</dd></div>
+              <div><dt>${t("Subsessions")}</dt><dd>${effectiveSubsessions ? t("Enabled") : html`<span class="muted">${t("Disabled")}</span>`}</dd></div>
+              <div><dt>${t("Ask questions")}</dt><dd>${effectiveAskUser ? t("Enabled") : html`<span class="muted">${t("Disabled")}</span>`}</dd></div>
             </dl>
           </section>
         `}

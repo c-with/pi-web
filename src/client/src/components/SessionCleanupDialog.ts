@@ -41,7 +41,7 @@ export class SessionCleanupDialog extends LocalizedLitElement {
           <button class="close-button" title=${t("Close cleanup")} aria-label=${t("Close cleanup")} @click=${() => { this.onClose?.(); }}>×</button>
         </header>
         <div class="body">
-          <p class="intro">Preview manual cleanup for this machine before archiving idle sessions or permanently deleting old archived sessions.</p>
+          <p class="intro">${t("Preview manual cleanup for this machine before archiving idle sessions or permanently deleting old archived sessions.")}</p>
           ${this.renderForm(validation.ok ? "" : validation.error)}
           ${this.renderMessage()}
           ${this.preview === undefined ? null : this.renderPreview(this.preview)}
@@ -75,9 +75,9 @@ export class SessionCleanupDialog extends LocalizedLitElement {
           <span>${t("days")}</span>
         </label>
       </fieldset>
-      <p class="warning"><strong>Deletion is permanent.</strong> Cleanup only deletes sessions that are already archived.</p>
+      <p class="warning"><strong>${t("Deletion is permanent.")}</strong> ${t("Cleanup only deletes sessions that are already archived.")}</p>
       ${validationError === "" ? null : html`<div class="dialog-error" role="alert">${validationError}</div>`}
-      ${previewOutOfDate ? html`<div class="hint" role="status">Thresholds changed. Preview again before running cleanup.</div>` : null}
+      ${previewOutOfDate ? html`<div class="hint" role="status">${t("Thresholds changed. Preview again before running cleanup.")}</div>` : null}
     `;
   }
 
@@ -93,7 +93,7 @@ export class SessionCleanupDialog extends LocalizedLitElement {
     return html`
       <section class="preview" aria-label=${t("Cleanup preview")}>
         <h2>${t("Preview")}</h2>
-        ${preview.projects.length === 0 ? html`<p class="empty">No sessions match these thresholds.</p>` : html`
+        ${preview.projects.length === 0 ? html`<p class="empty">${t("No sessions match these thresholds.")}</p>` : html`
           ${this.renderSelectionControls(preview, selectedCwds)}
           <div class="table-scroll" tabindex="0" aria-label=${t("Cleanup projects table")}>
             <table>
@@ -118,11 +118,11 @@ export class SessionCleanupDialog extends LocalizedLitElement {
     const disabled = this.loading || this.running;
     return html`
       <div class="selection-controls" role="group" aria-label=${t("Project selection")}>
-        <span>${selectedCwds.length} of ${preview.projects.length} projects selected</span>
-        <button ?disabled=${disabled || selectedCwds.length === preview.projects.length} @click=${() => { this.selectAllProjects(); }}>Select all</button>
-        <button ?disabled=${disabled || selectedCwds.length === 0} @click=${() => { this.deselectAllProjects(); }}>Deselect all</button>
+        <span>${t("{selected} of {total} projects selected", { selected: selectedCwds.length, total: preview.projects.length })}</span>
+        <button ?disabled=${disabled || selectedCwds.length === preview.projects.length} @click=${() => { this.selectAllProjects(); }}>${t("Select all")}</button>
+        <button ?disabled=${disabled || selectedCwds.length === 0} @click=${() => { this.deselectAllProjects(); }}>${t("Deselect all")}</button>
       </div>
-      ${selectedCwds.length === 0 ? html`<p class="hint" role="status">Select at least one project to run cleanup.</p>` : null}
+      ${selectedCwds.length === 0 ? html`<p class="hint" role="status">${t("Select at least one project to run cleanup.")}</p>` : null}
     `;
   }
 
@@ -198,7 +198,7 @@ export class SessionCleanupDialog extends LocalizedLitElement {
     const selectedPreview = this.selectedPreview();
     const selectedProjectCwds = this.selectedProjectCwdsForPreview();
     if (!canRunSessionCleanup({ draft: this.draft, preview: selectedPreview, previewRequest: this.previewRequest })) {
-      this.formError = selectedPreview !== undefined && !sessionCleanupPreviewHasTargets(selectedPreview) ? "Select at least one project to run cleanup." : "Preview cleanup before running it.";
+      this.formError = selectedPreview !== undefined && !sessionCleanupPreviewHasTargets(selectedPreview) ? t("Select at least one project to run cleanup.") : t("Preview cleanup before running it.");
       return;
     }
     if (selectedPreview === undefined || !confirmSessionCleanup(selectedPreview, (message) => confirm(message))) return;

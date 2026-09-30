@@ -3232,7 +3232,7 @@ export class PiWebApp extends LocalizedLitElement {
 
   private async removeMachine(machine: Machine | undefined = this.state.selectedMachine): Promise<void> {
     if (machine === undefined || machine.kind === "local") return;
-    if (!window.confirm(`Remove ${machine.name}?\n\nThis only removes it from this PI WEB gateway.`)) return;
+    if (!window.confirm(t("Remove {name}? This only removes it from this PI WEB gateway.", { name: machine.name }))) return;
     const wasSelected = this.state.selectedMachine?.id === machine.id;
     if (wasSelected) this.rememberCurrentMachineNavigation();
     const fallback = await this.machines.deleteMachine(machine, { selectFallback: !wasSelected });
@@ -3741,7 +3741,7 @@ export class PiWebApp extends LocalizedLitElement {
         && restored !== this.ownerDocument.documentElement && focusElement(restored)) return;
       // Collapse/resize may replace the original trigger while the dialog is open.
       for (const host of this.renderRoot.querySelectorAll("app-context-bar, app-mobile-main-tabs, workspace-panel")) {
-        const button = host.shadowRoot?.querySelector<HTMLButtonElement>('button[aria-label="Navigation"]');
+        const button = host.shadowRoot?.querySelector<HTMLButtonElement>('button[aria-haspopup="dialog"]');
         if (button !== null && button !== undefined && focusElement(button)) return;
       }
     });

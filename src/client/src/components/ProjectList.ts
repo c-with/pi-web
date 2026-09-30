@@ -90,7 +90,7 @@ export class ProjectList extends LocalizedLitElement implements KeyboardNavigabl
                   ${this.renderActivity(project)}
                 </div>
                 <div class="action-menu">
-                  <button class="action-menu-toggle" title="Project actions" aria-label=${`Actions for ${project.name}`} @click=${(event: MouseEvent) => { event.stopPropagation(); this.toggleMenu(project.id, event.currentTarget); }}>⋯</button>
+                  <button class="action-menu-toggle" title=${t("Project actions")} aria-label=${t("Actions for {name}", { name: project.name })} @click=${(event: MouseEvent) => { event.stopPropagation(); this.toggleMenu(project.id, event.currentTarget); }}>⋯</button>
                   ${this.openMenuProjectId === project.id ? html`
                     <div class="action-menu-panel" style=${this.menuStyle} @click=${(event: MouseEvent) => { event.stopPropagation(); }}>
                       ${this.onMove === undefined ? null : html`
@@ -143,7 +143,7 @@ export class ProjectList extends LocalizedLitElement implements KeyboardNavigabl
 
   private close(project: Project) {
     this.openMenuProjectId = undefined;
-    if (confirm(`Close ${project.name}?\n\nThis only removes it from PI WEB; it will not change the project folder.`)) this.onClose?.(project);
+    if (confirm(t("Close {name}? This only removes it from PI WEB; it will not change the project folder.", { name: project.name }))) this.onClose?.(project);
   }
 
   static override styles = listStyles;

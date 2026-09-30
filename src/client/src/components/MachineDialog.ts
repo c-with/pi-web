@@ -109,16 +109,16 @@ export class MachineDialog extends LocalizedLitElement {
                 ${t("Machine name")}
                 <input name="name" type="text" .value=${this.name} @input=${(event: InputEvent) => { this.handleNameInput(event); }} placeholder=${this.previousSuggestedName || "Dev Box"} autocomplete="off" />
               </label>
-              <small class="hint">Suggested from the URL. Edit it to use a friendlier sidebar label.</small>
+              <small class="hint">${t("Suggested from the URL. Edit it to use a friendlier sidebar label.")}</small>
               <label>
                 ${t("Bearer token")} <span class="optional">${t("optional")}</span>
                 <input name="token" type="password" .value=${this.token} @input=${(event: InputEvent) => { this.handleTokenInput(event); }} placeholder=${t("Leave blank if the remote machine does not require one")} autocomplete="off" />
               </label>
-              <small class="hint">Paste only the token value; PI WEB sends it as an Authorization: Bearer header.</small>
-            ` : html`<p class="hint intro">After you enter a URL, PI WEB will suggest a machine name and let you add an optional bearer token.</p>`}
+              <small class="hint">${t("Paste only the token value; PI WEB sends it as an Authorization: Bearer header.")}</small>
+            ` : html`<p class="hint intro">${t("After you enter a URL, PI WEB will suggest a machine name and let you add an optional bearer token.")}</p>`}
           </div>
           <footer>
-            <button type="button" @click=${() => { this.onCancel?.(); }}>Cancel</button>
+            <button type="button" @click=${() => { this.onCancel?.(); }}>${t("Cancel")}</button>
             <button class="primary" type="submit" ?disabled=${!canSubmit}>${this.submitting ? t("Adding…") : t("Add machine")}</button>
           </footer>
         </form>
