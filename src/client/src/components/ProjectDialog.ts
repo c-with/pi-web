@@ -175,13 +175,13 @@ export class ProjectDialog extends LocalizedLitElement {
             <input .value=${this.path} @input=${(event: InputEvent) => { this.onPathInput(event); }} placeholder="/path/to/project or ~/code/project" />
           </label>
           <div class="suggestions">
-            ${this.loading ? html`<div class="hint">Loading folders…</div>` : null}
+            ${this.loading ? html`<div class="hint">${t("Loading folders…")}</div>` : null}
             ${this.suggestions.map((suggestion, index) => html`
               <button class=${index === this.selected ? "selected" : ""} @click=${() => { this.pick(suggestion); }}>
                 ${suggestion.path}
               </button>
             `)}
-            ${!this.loading && this.suggestions.length === 0 ? html`<div class="hint">No matching folders. Enter a new path to create it.</div>` : null}
+            ${!this.loading && this.suggestions.length === 0 ? html`<div class="hint">${t("No matching folders. Enter a new path to create it.")}</div>` : null}
           </div>
           <label class="check">
             <input type="checkbox" .checked=${this.createMissing} @change=${(event: InputEvent) => { this.onCreateMissingChange(event); }} />
@@ -190,7 +190,7 @@ export class ProjectDialog extends LocalizedLitElement {
           ${this.renderTrustChoice()}
         </div>
         <footer>
-          <button @click=${() => { this.onCancel?.(); }}>Cancel</button>
+          <button @click=${() => { this.onCancel?.(); }}>${t("Cancel")}</button>
           <button class="primary" ?disabled=${this.path.trim() === ""} @click=${() => { this.submit(); }}>${t("Add project")}</button>
         </footer>
       </modal-surface>

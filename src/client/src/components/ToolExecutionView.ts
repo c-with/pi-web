@@ -48,7 +48,7 @@ export class ToolExecutionView extends LocalizedLitElement {
           </div>
         </div>
 
-        ${previewMismatch ? html`<p class="notice">Applied diff differs from the preview.</p>` : null}
+        ${previewMismatch ? html`<p class="notice">${t("Applied diff differs from the preview.")}</p>` : null}
         ${errorText === undefined || errorText === "" ? null : html`<pre class="error-text">${errorText}</pre>`}
         ${visibleDiff === undefined ? this.renderTextBody(bodyText, execution.status === "error", target) : this.renderDiffBody(visibleDiff, actualDiff === undefined ? t("Preview diff") : t("Applied diff"), target)}
       </section>
@@ -79,7 +79,7 @@ export class ToolExecutionView extends LocalizedLitElement {
         ${this.renderExpandedTarget(target)}
         ${text === undefined || text === "" ? null : html`
           <div class="detail-result">
-            <span class="detail-label">Result</span>
+            <span class="detail-label">${t("Result")}</span>
             <pre>${text}</pre>
           </div>
         `}

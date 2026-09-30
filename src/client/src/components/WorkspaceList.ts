@@ -131,7 +131,7 @@ export class WorkspaceList extends LocalizedLitElement implements KeyboardNaviga
     return html`
       <span class="workspace-primary">
         <span class="workspace-primary-label">${label}</span>
-        ${this.isDeleting(workspace) ? html`<span class="workspace-status">Deleting…</span>` : null}
+        ${this.isDeleting(workspace) ? html`<span class="workspace-status">${t("Deleting…")}</span>` : null}
       </span>
       ${items.length === 0 ? null : html`
         <small class="workspace-secondary">
@@ -245,7 +245,7 @@ export class WorkspaceList extends LocalizedLitElement implements KeyboardNaviga
           <dd>${label}${this.renderDetailCopyButton(`${workspace.id}:label`, workspace.label, "Copy workspace label")}</dd>
         </div>
         <div class="workspace-detail-row">
-          <dt>Path</dt>
+          <dt>${t("Path")}</dt>
           <dd title=${workspace.path}>${workspace.path}${this.renderDetailCopyButton(`${workspace.id}:path`, workspace.path, "Copy path")}</dd>
         </div>
         ${items.length === 0 ? null : html`

@@ -261,14 +261,14 @@ function setComponentState(list: SessionList, property: string, value: unknown):
 }
 
 // Locates the bulk "Mark read" button inside the selection toolbar template,
-// anchored to the button's own static text so unrelated toolbar changes do not
+// anchored to the button's stable action marker so unrelated toolbar changes do not
 // break the lookup. The disabled binding sits immediately before its @click.
 function markReadButton(template: TemplateResult): { disabled: boolean; click: TemplateEventHandler } {
-  const host = findTemplateWithStaticText(template, ">Mark read</button>");
+  const host = findTemplateWithStaticText(template, 'data-action="mark-read"');
   const strings = templateStrings(host);
   const values = templateValues(host);
   for (let index = 0; index < values.length; index += 1) {
-    if (strings[index + 1]?.includes(">Mark read</button>") !== true) continue;
+    if (strings[index]?.includes('data-action="mark-read"') !== true) continue;
     const click = values[index];
     const disabled = values[index - 1];
     if (!isTemplateEventHandler(click) || typeof disabled !== "boolean") throw new Error("Mark read button wiring is unavailable");

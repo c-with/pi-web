@@ -482,11 +482,11 @@ export class ChatView extends LocalizedLitElement {
             <button
               type="button"
               class="notification-control notification-clear"
-              aria-label="Clear all notifications"
-              title="Clear all notifications"
+              aria-label=${t("Clear all notifications")}
+              title=${t("Clear all notifications")}
               ?disabled=${inbox.dismissAllPending || totalCount === 0 || this.onDismissAllNotifications === undefined}
               @click=${() => { this.dismissAllNotifications(); }}
-            >Clear</button>
+            >${t("Clear")}</button>
             <button
               type="button"
               class="notification-control notification-toggle"
@@ -518,7 +518,7 @@ export class ChatView extends LocalizedLitElement {
                   type="button"
                   class="notification-row-dismiss"
                   aria-label=${notificationDismissLabel(notification)}
-                  title="Dismiss notification"
+                  title=${t("Dismiss notification")}
                   ?disabled=${inbox.pendingDismissedIds.has(notification.id) || inbox.dismissAllPending || this.onDismissNotification === undefined}
                   @click=${() => { this.dismissNotification(notification.id); }}
                 >${renderNotificationCloseIcon()}</button>
@@ -605,14 +605,14 @@ export class ChatView extends LocalizedLitElement {
             <button
               type="button"
               class="session-warnings-collapse"
-              title="Minimise warnings"
-              aria-label="Minimise warnings"
+              title=${t("Minimise warnings")}
+              aria-label=${t("Minimise warnings")}
               @click=${this.handleToggleWarnings}
             >
               <svg class="session-warnings-collapse-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                 <path d="m18 15-6-6-6 6"></path>
               </svg>
-              <span>Minimise</span>
+              <span>${t("Minimise")}</span>
             </button>
           </div>
         `}
@@ -632,7 +632,7 @@ export class ChatView extends LocalizedLitElement {
               <button
                 type="button"
                 class="session-warning-dismiss"
-                title="Don't show this warning again"
+                title=${t("Don't show this warning again")}
                 aria-label=${t("Dismiss warning")}
                 @click=${() => { this.onDismissWarning?.(dismissId); }}
               >×</button>
@@ -648,7 +648,7 @@ export class ChatView extends LocalizedLitElement {
     return html`
       <dialog class="image-zoom" @click=${this.onImageZoomDialogClick} @close=${this.closeImageZoom} @cancel=${this.closeImageZoom}>
         ${this.zoomedImage === undefined ? null : html`
-          <button type="button" class="image-zoom-close" aria-label="Close image" @click=${this.closeImageZoom}>×</button>
+          <button type="button" class="image-zoom-close" aria-label=${t("Close image")} @click=${this.closeImageZoom}>×</button>
           <img class="image-zoom-full" src=${this.zoomedImage.src} alt=${this.zoomedImage.alt} />
         `}
       </dialog>
@@ -710,7 +710,7 @@ export class ChatView extends LocalizedLitElement {
             <small>${section.detail}</small>
           </div>
           ${canClear ? html`
-            <button type="button" class="queued-clear-button" title="Clear queued messages without stopping active work" @click=${this.handleClearServerQueue}>Clear queue</button>
+            <button type="button" class="queued-clear-button" title=${t("Clear queued messages without stopping active work")} data-action="clear-queue" @click=${this.handleClearServerQueue}>${t("Clear queue")}</button>
           ` : null}
         </div>
         ${section.messages.map((message, index) => html`
@@ -772,7 +772,7 @@ export class ChatView extends LocalizedLitElement {
     return html`
       <aside class="session-activity compacting" aria-live="polite">
         <strong>${t("Compacting history…")}</strong>
-        <span>The agent is summarizing earlier context. New prompts will be queued until compaction finishes.</span>
+        <span>${t("The agent is summarizing earlier context. New prompts will be queued until compaction finishes.")}</span>
         ${this.pendingMessageCount > 0 ? html`<small>${this.pendingMessageCount} queued ${this.pendingMessageCount === 1 ? "message" : "messages"}</small>` : null}
       </aside>
     `;
@@ -820,7 +820,7 @@ export class ChatView extends LocalizedLitElement {
     if (this.loadingMore) return html`<div class="history-boundary"><span>${t("Loading earlier messages…")}</span>${range}</div>`;
     if (this.hasMore) return html`
       <div class="history-boundary">
-        <button type="button" class="history-load-button" ?disabled=${this.loadMoreRequested} @click=${() => { this.requestLoadMore(); }}>Load earlier messages</button>
+        <button type="button" class="history-load-button" ?disabled=${this.loadMoreRequested} @click=${() => { this.requestLoadMore(); }}>${t("Load earlier messages")}</button>
         <span>${t("Scroll up to load earlier messages")}</span>
         ${range}
       </div>
@@ -931,8 +931,8 @@ export class ChatView extends LocalizedLitElement {
     return html`
       <div class="msg-actions" aria-label=${t("Message actions")}>
         ${canNavigate ? html`
-          <button type="button" class="msg-action" title="Clone session from this message" aria-label="Clone session from this message" ?disabled=${this.messageActionsDisabled || this.messageActionPending} @click=${(event: MouseEvent) => { void this.actOnMessage(message, "fork", event); }}><span class="msg-fork-icon" aria-hidden="true">⑂</span></button>
-          <button type="button" class="msg-action" title="Go back to this message" aria-label="Go back to this message" ?disabled=${this.messageActionsDisabled || this.messageActionPending} @click=${(event: MouseEvent) => { void this.actOnMessage(message, "back", event); }}><svg aria-hidden="true" width="16" height="16" viewBox="-3 -3 30 30" fill="none" stroke="currentColor" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round"><path vector-effect="non-scaling-stroke" d="M4 5h11a6 6 0 0 1 0 12H4m5-5-5 5 5 5" /></svg></button>
+          <button type="button" class="msg-action" title=${t("Clone session from this message")} aria-label=${t("Clone session from this message")} ?disabled=${this.messageActionsDisabled || this.messageActionPending} @click=${(event: MouseEvent) => { void this.actOnMessage(message, "fork", event); }}><span class="msg-fork-icon" aria-hidden="true">⑂</span></button>
+          <button type="button" class="msg-action" title=${t("Go back to this message")} aria-label=${t("Go back to this message")} ?disabled=${this.messageActionsDisabled || this.messageActionPending} @click=${(event: MouseEvent) => { void this.actOnMessage(message, "back", event); }}><svg aria-hidden="true" width="16" height="16" viewBox="-3 -3 30 30" fill="none" stroke="currentColor" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round"><path vector-effect="non-scaling-stroke" d="M4 5h11a6 6 0 0 1 0 12H4m5-5-5 5 5 5" /></svg></button>
         ` : null}
         ${canCopy ? html`<button type="button" class="msg-action" title=${copied ? t("Copied") : t("Copy message")} aria-label=${`${copied ? t("Copied") : "Copy"} ${message.role} message`} @click=${(event: MouseEvent) => { void this.copyMessage(message, key, event); }}>
           <span aria-hidden="true">${copied ? "✓" : "⧉"}</span>
@@ -1003,7 +1003,7 @@ export class ChatView extends LocalizedLitElement {
     const intentKey = JSON.stringify([this.machineId, this.sessionId, message.entryId ?? messageIndex, partIndex]);
     if (part.type === "text" && message.role === "bash") return html`<pre class="part shell-output">${part.text}</pre>`;
     if (part.type === "text") return html`<formatted-text .intentKey=${intentKey} class="part" .contentRendering=${this.contentRendering} .machineId=${this.machineId} .workspaceContext=${this.workspaceContext} .text=${part.text}></formatted-text>`;
-    if (part.type === "thinking") return html`<details class="part"><summary>thinking</summary><formatted-text .intentKey=${intentKey} .contentRendering=${this.contentRendering} .machineId=${this.machineId} .workspaceContext=${this.workspaceContext} .text=${part.text}></formatted-text></details>`;
+    if (part.type === "thinking") return html`<details class="part"><summary>${t("Thinking")}</summary><formatted-text .intentKey=${intentKey} .contentRendering=${this.contentRendering} .machineId=${this.machineId} .workspaceContext=${this.workspaceContext} .text=${part.text}></formatted-text></details>`;
     if (part.type === "skillInvocation") return html`
       <details class="part skill-invocation">
         <summary><b>[skill]</b> ${part.name}</summary>

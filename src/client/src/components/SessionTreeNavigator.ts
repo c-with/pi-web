@@ -103,7 +103,7 @@ export class SessionTreeNavigator extends LocalizedLitElement {
     return html`
       <div class="body tree-step">
         <div class="tree-intro">
-          <p>Select the history entry where you would like to continue.</p>
+          <p>${t("Select the history entry where you would like to continue.")}</p>
           <div class="legend" aria-label=${t("Session tree markers")}>
             <span><span class="marker active-path-marker" aria-hidden="true"></span>${t("Active path")}</span>
             <span><span class="marker active-leaf-marker" aria-hidden="true"></span>${t("Active leaf")}</span>
@@ -112,7 +112,7 @@ export class SessionTreeNavigator extends LocalizedLitElement {
         ${this.statusMessage === "" ? null : html`<div class="dialog-status" role="status">${this.statusMessage}</div>`}
         ${this.error === "" ? null : html`<div class="dialog-error" role="alert">${this.error}</div>`}
         ${rows.length === 0 ? html`
-          <div class="empty" role="status">This session does not contain any selectable history entries.</div>
+          <div class="empty" role="status">${t("This session does not contain any selectable history entries.")}</div>
         ` : html`
           <div class="tree" role="tree" aria-label=${t("Complete session history")}>
             ${rows.map((row) => this.renderTreeRow(row))}
@@ -184,7 +184,7 @@ export class SessionTreeNavigator extends LocalizedLitElement {
             <span class="eyebrow">${t("Selected entry")}</span>
             <h2>${t("Choose how to continue")}</h2>
           </div>
-          ${selectedNode === undefined ? html`<div class="empty">The selected history entry is no longer available.</div>` : html`
+          ${selectedNode === undefined ? html`<div class="empty">${t("The selected history entry is no longer available.")}</div>` : html`
             <div class="selected-entry">
               ${this.renderKindBadge(sessionTreeKindPresentation(selectedNode.kind))}
               <strong dir="auto">${selectedNode.summary}</strong>
@@ -192,7 +192,7 @@ export class SessionTreeNavigator extends LocalizedLitElement {
             </div>
           `}
           <fieldset ?disabled=${this.busy}>
-            <legend>How would you like to continue?</legend>
+            <legend>${t("How would you like to continue?")}</legend>
             ${this.renderOperationOption("continue", "Continue in this session", "Branch from the selected entry in this session file and keep its other branches.")}
             ${this.renderOperationOption("fork", "Fork into a new session", "Create and switch to a separate session file while leaving the original unchanged.")}
           </fieldset>
@@ -204,7 +204,7 @@ export class SessionTreeNavigator extends LocalizedLitElement {
               ${this.renderSummaryOption("custom", "Summarize with custom focus", "Guide Pi toward the details that matter for the new branch.")}
               ${this.summaryMode === "custom" ? html`
                 <label class="custom-focus" for="session-tree-custom-focus">
-                  <span>Custom summary focus</span>
+                  <span>${t("Custom summary focus")}</span>
                   <textarea
                     id="session-tree-custom-focus"
                     rows="5"
@@ -219,7 +219,7 @@ export class SessionTreeNavigator extends LocalizedLitElement {
             </fieldset>
           ` : null}
           <div class="side-effects-note" role="note">
-            <strong>Conversation context only.</strong> Continuing or forking does not undo filesystem changes, shell commands, tool calls, or other side effects.
+            <strong>${t("Conversation context only.")}</strong> ${t("Continuing or forking does not undo filesystem changes, shell commands, tool calls, or other side effects.")}
           </div>
           ${this.statusMessage === "" ? null : html`<div class="dialog-status" role="status">${this.statusMessage}</div>`}
           ${this.error === "" ? null : html`<div class="dialog-error" role="alert">${this.error}</div>`}
@@ -231,11 +231,11 @@ export class SessionTreeNavigator extends LocalizedLitElement {
   private selectedEntryDescription(kind: SessionTreeNodeKind): string {
     if (this.operation === "fork") {
       return kind === "user"
-        ? "The new session will branch before this user message, and its text will return to the prompt editor as the new session draft."
+        ? t("The new session will branch before this user message, and its text will return to the prompt editor as the new session draft.")
         : "The new session will include this entry and all history leading to it.";
     }
     return sessionTreeEntryReturnsToEditor(kind)
-      ? "This message’s text will return to the prompt editor for optional editing and resubmission in this session."
+      ? t("This message’s text will return to the prompt editor for optional editing and resubmission in this session.")
       : "The prompt editor will be empty after continuing from this entry in this session.";
   }
 
@@ -273,9 +273,9 @@ export class SessionTreeNavigator extends LocalizedLitElement {
     if (this.step === "tree") {
       return html`
         <footer>
-          <button @click=${() => { this.onCancel?.(); }}>Cancel</button>
+          <button @click=${() => { this.onCancel?.(); }}>${t("Cancel")}</button>
           <span class="footer-spacer"></span>
-          <button class="primary" ?disabled=${this.selectedId === undefined} @click=${() => { this.continueToAction(); }}>Next</button>
+          <button class="primary" ?disabled=${this.selectedId === undefined} data-action="continue" @click=${() => { this.continueToAction(); }}>${t("Next")}</button>
         </footer>
       `;
     }
@@ -284,7 +284,7 @@ export class SessionTreeNavigator extends LocalizedLitElement {
     const summarizing = continuing && this.summaryMode !== "none";
     return html`
       <footer>
-        <button ?disabled=${this.busy} @click=${() => { this.returnToTree(); }}>Back</button>
+        <button ?disabled=${this.busy} @click=${() => { this.returnToTree(); }}>${t("Back")}</button>
         <span class="footer-spacer"></span>
         ${this.busy && summarizing ? html`
           <button class="danger" ?disabled=${this.aborting} @click=${() => { void this.abortNavigation(); }}>${this.aborting ? t("Cancelling…") : t("Cancel summarization")}</button>
@@ -413,7 +413,7 @@ export class SessionTreeNavigator extends LocalizedLitElement {
     }
     const navigate = this.onNavigate;
     if (navigate === undefined) {
-      this.error = "Session tree navigation is unavailable. Close and reopen /tree, then try again.";
+      this.error = t("Session tree navigation is unavailable. Close and reopen /tree, then try again.");
       return;
     }
 
@@ -431,7 +431,7 @@ export class SessionTreeNavigator extends LocalizedLitElement {
       if (!result.cancelled) return;
       this.step = "tree";
       this.statusMessage = result.aborted === true
-        ? "Summarization cancelled. Your selected history entry is unchanged."
+        ? t("Summarization cancelled. Your selected history entry is unchanged.")
         : "Navigation cancelled. Your selected history entry is unchanged.";
       this.pendingFocus = "tree";
     } catch (error: unknown) {
@@ -447,7 +447,7 @@ export class SessionTreeNavigator extends LocalizedLitElement {
     if (this.busy || this.selectedId === undefined) return;
     const fork = this.onFork;
     if (fork === undefined) {
-      this.error = "Fork from the session tree is unavailable. Close and reopen /tree, then try again.";
+      this.error = t("Fork from the session tree is unavailable. Close and reopen /tree, then try again.");
       return;
     }
 
@@ -476,13 +476,13 @@ export class SessionTreeNavigator extends LocalizedLitElement {
     if (!this.busy || this.summaryMode === "none" || this.aborting) return;
     const abort = this.onAbort;
     if (abort === undefined) {
-      this.error = "Summarization cannot be cancelled from this client.";
+      this.error = t("Summarization cannot be cancelled from this client.");
       return;
     }
     const generation = this.operationGeneration;
     this.aborting = true;
     this.error = "";
-    this.statusMessage = "Cancelling summarization…";
+    this.statusMessage = t("Cancelling summarization…");
     try {
       await abort();
     } catch (error: unknown) {

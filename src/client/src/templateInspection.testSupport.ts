@@ -117,7 +117,7 @@ export function templateValueAfterMarker(template: TemplateResult, marker: strin
  * before or after the handler value) includes `marker`.
  *
  * Use for attribute-anchored wiring such as `@click=`, `@load=`, `@toggle=`, or
- * a marker in the text right after the handler (e.g. `>Clear queue</button>`).
+ * a marker in the text right after the handler (e.g. a localized clear-queue label).
  */
 export function templateEventHandlerNearMarker<E extends Event = Event>(template: TemplateResult, marker: string): TemplateEventHandler<E> {
   const handler = findOptionalTemplateEventHandlerNearMarker<E>(template, marker);

@@ -134,7 +134,7 @@ export class ContentRendererHost extends LocalizedLitElement {
     const diagnostic = this.failure;
     const showingRaw = preview === undefined || diagnostic !== undefined;
     return html`
-      ${this.externalControls ? null : html`<div class="controls" role="group" aria-label="Diagram controls">
+      ${this.externalControls ? null : html`<div class="controls" role="group" aria-label=${t("Diagram controls")}>
         ${this.choices.length < 2 ? null : html`
           <select aria-label=${t("Diagram renderer")} @change=${(event: Event) => { if (event.target instanceof HTMLSelectElement) this.selectRenderer(event.target.value); }}>
             ${this.choices.map(({ id, label }) => html`<option value=${id} .selected=${id === this.selectedId}>${label}</option>`)}
@@ -142,7 +142,7 @@ export class ContentRendererHost extends LocalizedLitElement {
         `}
         ${this.renderer === undefined ? null : html`
           <button type="button" aria-controls="content" aria-pressed=${!showingRaw} @click=${() => { this.setRaw(false); }}>${this.renderer.renderMode === "automatic" ? t("Preview") : t("Render")}</button>
-          <button type="button" aria-controls="content" aria-pressed=${showingRaw} @click=${() => { this.setRaw(true); }}>Raw</button>
+          <button type="button" aria-controls="content" aria-pressed=${showingRaw} @click=${() => { this.setRaw(true); }}>${t("Raw")}</button>
         `}
         <button class="copy" type="button" @click=${() => { void this.copy(); }}>${this.copyStatus}</button>
         <span class="sr-only" role="status">${this.copyStatus === "Copy source" ? "" : this.copyStatus}</span>

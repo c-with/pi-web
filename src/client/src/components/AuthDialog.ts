@@ -159,10 +159,10 @@ export class AuthDialog extends LocalizedLitElement {
     const visible = this.filteredOptions(options);
     return html`
       ${this.stepHasSearch(state) && options.length > 0 ? html`
-        <input aria-label="Search providers" placeholder="Search providers" .value=${this.query} @input=${(event: Event) => { this.handleSearchInput(event); }}>
+        <input aria-label=${t("Search providers")} placeholder=${t("Search providers")} .value=${this.query} @input=${(event: Event) => { this.handleSearchInput(event); }}>
       ` : null}
       <div class="options">
-        ${options.length === 0 ? html`<div class="empty">${state.step === "logout" ? "No stored credentials. Environment variables and models.json settings are unchanged." : "No providers available."}</div>`
+        ${options.length === 0 ? html`<div class="empty">${state.step === "logout" ? t("No stored credentials. Environment variables and models.json settings are unchanged.") : t("No providers available.")}</div>`
         : visible.length === 0 ? html`<div class="empty">${t("No matching providers")}</div>`
         : visible.map((option, index) => html`
           <button
@@ -193,13 +193,13 @@ export class AuthDialog extends LocalizedLitElement {
     return html`
       <div class="form">
         ${flow.auth !== undefined ? html`
-          <p>Open this authorization link:</p>
+          <p>${t("Open this authorization link:")}</p>
           <p><a href=${flow.auth.url} target="_blank" rel="noreferrer">${flow.auth.url}</a></p>
           ${flow.auth.deviceCode !== undefined ? html`
             <p class="warning">${t("Enter code:")} <code>${flow.auth.deviceCode.userCode}</code></p>
           ` : flow.auth.instructions !== undefined ? html`<p class="warning">${flow.auth.instructions}</p>` : null}
         ` : html`<p>${t("Starting login flow…")}</p>`}
-        ${showPasteNote ? html`<p class="warning">After you approve, the redirect page will probably fail to load — that is expected. Copy the full URL from your browser's address bar and paste it below.</p>` : null}
+        ${showPasteNote ? html`<p class="warning">${t("After you approve, the redirect page will probably fail to load — that is expected. Copy the full URL from your browser's address bar and paste it below.")}</p>` : null}
         ${flow.progress.length > 0 ? html`<ul class="progress">${flow.progress.map((line) => html`<li>${line}</li>`)}</ul>` : null}
         ${flow.info?.map((item) => item.links === undefined || item.links.length === 0 ? null : html`
           <div class="info-links" aria-label=${t("Related information")}>
@@ -209,7 +209,7 @@ export class AuthDialog extends LocalizedLitElement {
         ${prompt !== undefined ? html`
           <label>${prompt.message}</label>
           <input type=${promptInputType} autocomplete=${promptInputType === "password" ? "off" : "on"} .value=${state.inputValue ?? ""} placeholder=${prompt.placeholder ?? ""} @input=${(event: Event) => { if (event.target instanceof HTMLInputElement) this.onOAuthInput?.(event.target.value); }}>
-          <div class="actions"><button @click=${() => { this.onOAuthCancel?.(); }}>Cancel</button><button class="primary" ?disabled=${state.responding === true} @click=${() => { this.onOAuthRespond?.(); }}>Submit</button></div>
+          <div class="actions"><button @click=${() => { this.onOAuthCancel?.(); }}>${t("Cancel")}</button><button class="primary" ?disabled=${state.responding === true} @click=${() => { this.onOAuthRespond?.(); }}>${t("Submit")}</button></div>
         ` : null}
         ${select !== undefined ? html`
           <p>${select.message}</p>
@@ -222,7 +222,7 @@ export class AuthDialog extends LocalizedLitElement {
         ` : null}
         ${state.error !== undefined && state.error !== "" ? html`<div class="error-text">${state.error}</div>` : null}
         ${flow.status === "error" || flow.status === "cancelled" ? html`<div class="error-text">${flow.error ?? flow.status}</div><div class="actions"><button @click=${() => { this.cancel(); }}>${t("Close")}</button></div>` : null}
-        ${prompt === undefined && select === undefined && flow.status === "running" ? html`<div class="actions"><button @click=${() => { this.onOAuthCancel?.(); }}>Cancel</button></div>` : null}
+        ${prompt === undefined && select === undefined && flow.status === "running" ? html`<div class="actions"><button @click=${() => { this.onOAuthCancel?.(); }}>${t("Cancel")}</button></div>` : null}
       </div>
     `;
   }
@@ -363,13 +363,12 @@ function authDialogStateStep(value: unknown): AuthDialogState["step"] | undefine
 function statusLabel(provider: AuthProviderOption): string {
   if (provider.status.source === undefined) return "";
   switch (provider.status.source) {
-    case "stored": return "✓ configured";
+    case "stored": return `✓ ${t("configured")}`;
     case "environment": return `✓ env${provider.status.label === undefined ? "" : `: ${provider.status.label}`}`;
-    case "runtime": return "✓ runtime";
-    case "fallback": return "✓ custom key";
-    case "models_json_key": return "✓ models.json key";
-    case "models_json_command": return "✓ models.json command";
+    case "runtime": return `✓ ${t("runtime")}`;
+    case "fallback": return `✓ ${t("custom key")}`;
+    case "models_json_key": return `✓ ${t("models.json key")}`;
+    case "models_json_command": return `✓ ${t("models.json command")}`;
     default: return "";
   }
 }
-

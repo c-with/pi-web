@@ -171,7 +171,7 @@ export class AskUserCard extends LocalizedLitElement {
           >${question.question}</button>`)}?
         </p>
         <div class="confirmation-actions">
-          <button class="secondary-action" type="button" @click=${() => { this.keepEditing(ask, unanswered); }}>Keep editing</button>
+          <button class="secondary-action" type="button" @click=${() => { this.keepEditing(ask, unanswered); }}>${t("Keep editing")}</button>
           <button class="primary-action send-anyway" type="button" ?disabled=${this.submitting} @click=${() => { this.submitAnswers(ask); }}>
             ${this.submitting ? t("Sending…") : t("Send anyway")}
           </button>
@@ -182,9 +182,9 @@ export class AskUserCard extends LocalizedLitElement {
 
   private renderRecord(outcome: AskUserOutcome): TemplateResult {
     const recordLabel = outcome.reason === "submitted"
-      ? "Answers sent"
+      ? t("Answers sent")
       : outcome.reason === "superseded"
-        ? "Superseded"
+        ? t("Superseded")
         : t("Cancelled");
     return html`
       <article class="card record-card" aria-labelledby="ask-user-record-heading">
@@ -194,7 +194,7 @@ export class AskUserCard extends LocalizedLitElement {
         </header>
         <p class="record-summary">
           ${outcome.reason === "superseded"
-            ? "A newer question set replaced this one. Draft answers shown below were not sent to the model."
+            ? t("A newer question set replaced this one. Draft answers shown below were not sent to the model.")
             : outcome.summary}
         </p>
         <div class="record-questions">

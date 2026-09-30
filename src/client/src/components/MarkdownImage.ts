@@ -2,6 +2,7 @@ import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
 import { css, html, type PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { TransientChoiceMemory } from "../formatting/transientChoiceMemory";
+import { t } from "../i18n/i18n";
 
 const shownImageMemory = new TransientChoiceMemory<true>();
 
@@ -28,12 +29,12 @@ export class MarkdownImage extends LocalizedLitElement {
     const visible = !this.outside || this.approved;
     return html`
       ${!visible ? html`<button class="placeholder" type="button" @click=${(event: MouseEvent) => { event.preventDefault(); event.stopPropagation(); this.approved = true; if (this.intentKey !== undefined) shownImageMemory.choose(this.intentKey, this.previewUrl, true); }}>
-        <span>Show image</span><code>${this.path}</code>
+        <span>${t("Show image")}</span><code>${this.path}</code>
       </button>` : null}
       ${visible && !this.failed ? html`<img src=${this.previewUrl} alt=${this.description} @error=${() => { this.failed = true; }} />` : null}
-      ${visible && this.failed ? html`<span role="status">Image unavailable: the file may be missing, inaccessible, unsupported, or too large.</span>
+      ${visible && this.failed ? html`<span role="status">${t("Image unavailable: the file may be missing, inaccessible, unsupported, or too large.")}</span>
         <code>${this.path}</code>
-        <button type="button" @click=${(event: MouseEvent) => { event.preventDefault(); event.stopPropagation(); this.failed = false; }}>Retry</button>` : null}
+        <button type="button" @click=${(event: MouseEvent) => { event.preventDefault(); event.stopPropagation(); this.failed = false; }}>${t("Retry")}</button>` : null}
     `;
   }
 

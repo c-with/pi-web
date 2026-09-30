@@ -3,6 +3,7 @@ import { css, html, type TemplateResult } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 import type { QualifiedContributionId } from "../../plugins/types";
 import { renderNavigationMenuIcon, renderAppTabIcon, type AppTabBuiltinIcon } from "../tabIcons";
+import { t } from "../../i18n/i18n";
 
 export type AppMobileMainTabBuiltinIcon = AppTabBuiltinIcon;
 export type AppMobileMainTabIcon = AppMobileMainTabBuiltinIcon | TemplateResult;
@@ -64,7 +65,7 @@ export class AppMobileMainTabs extends LocalizedLitElement {
               </button>
             `;
           })}
-          ${this.onShowNavigation === undefined ? null : html`<button type="button" class=${`navigation-menu-button${this.hiddenActiveDestination ? " selected" : ""}`} title="Navigation" aria-label="Navigation" aria-haspopup="dialog" @click=${this.onShowNavigation}>${renderNavigationMenuIcon()}</button>`}
+          ${this.onShowNavigation === undefined ? null : html`<button type="button" class=${`navigation-menu-button${this.hiddenActiveDestination ? " selected" : ""}`} title=${t("Navigation")} aria-label=${t("Navigation")} aria-haspopup="dialog" @click=${this.onShowNavigation}>${renderNavigationMenuIcon()}</button>`}
         </div>
       </div>
     `;

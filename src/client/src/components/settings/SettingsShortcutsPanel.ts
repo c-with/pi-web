@@ -12,7 +12,7 @@ import type { SettingsNotice } from "./SettingsPanelFrame";
 const RECORD_SHORTCUT_LISTENER_OPTIONS = { capture: true } as const;
 
 function renderShortcutsDescription(): TemplateResult {
-  return html`Edit app shortcuts by action. Type a shortcut such as <code>mod+k</code> or <code>g p</code>, record one from the keyboard, disable it with None, or reset it to the default. Unmodified app shortcuts work outside editable fields. Composer send bindings accept one key combination and take priority inside the editor; unassigned Enter and Shift+Enter insert newlines. Touch or narrow screen applies when the browser reports a coarse primary pointer (typically touch) or a viewport at most 760px wide; otherwise, desktop applies. When app shortcuts conflict, custom shortcuts win before defaults; ties are resolved by action id, and shorter shortcuts shadow longer sequences with the same prefix.`;
+  return html`${t("Edit app shortcuts by action. Type a shortcut such as")} <code>mod+k</code> ${t("or")} <code>g p</code>${t(", record one from the keyboard, disable it with None, or reset it to the default. Unmodified app shortcuts work outside editable fields. Composer send bindings accept one key combination and take priority inside the editor; unassigned Enter and Shift+Enter insert newlines. Touch or narrow screen applies when the browser reports a coarse primary pointer (typically touch) or a viewport at most 760px wide; otherwise, desktop applies. When app shortcuts conflict, custom shortcuts win before defaults; ties are resolved by action id, and shorter shortcuts shadow longer sequences with the same prefix.")}`;
 }
 
 @customElement("settings-shortcuts-panel")
@@ -44,7 +44,7 @@ export class SettingsShortcutsPanel extends LocalizedLitElement {
 
     const token = shortcutTokenFromEvent(event);
     if (token === undefined) {
-      this.localError = "Press a letter, number, punctuation, function, or navigation key. Press Esc to cancel recording.";
+      this.localError = t("Press a letter, number, punctuation, function, or navigation key. Press Esc to cancel recording.");
       return;
     }
     const tokens = [...recording.tokens, token];
@@ -80,13 +80,13 @@ export class SettingsShortcutsPanel extends LocalizedLitElement {
         .notices=${this.panelNotices()}
         .onAction=${this.onReload}
       >
-        ${this.configResponse === undefined && this.loading ? html`<div class="loading-card">Loading shortcuts…</div>` : html`
+        ${this.configResponse === undefined && this.loading ? html`<div class="loading-card">${t("Loading shortcuts…")}</div>` : html`
           <div class="config-path-card">
             <span>${t("Config file")}</span>
-            <code>${this.configResponse?.path ?? "Unknown"}</code>
+            <code>${this.configResponse?.path ?? t("Unknown")}</code>
             <small>${t("Shortcut overrides are saved under")} <code>shortcuts</code>. A value of <code>null</code> disables the action shortcut.</small>
           </div>
-          ${groups.length === 0 ? html`<div class="loading-card">No actions registered.</div>` : groups.map((group) => html`
+          ${groups.length === 0 ? html`<div class="loading-card">${t("No actions registered.")}</div>` : groups.map((group) => html`
             <section class="shortcut-group">
               <h3>${group.name}</h3>
               <div class="shortcut-list">
@@ -134,7 +134,7 @@ export class SettingsShortcutsPanel extends LocalizedLitElement {
             ${conflictLabel === undefined ? null : html`<small class=${shortcutConflictClass(resolution)}>${conflictLabel}</small>`}
           </div>
           <label class="shortcut-input-label">
-            <span>Shortcut</span>
+            <span>${t("Shortcut")}</span>
             <input
               class="shortcut-input"
               data-action-id=${action.id}
@@ -149,10 +149,10 @@ export class SettingsShortcutsPanel extends LocalizedLitElement {
           </label>
           ${recordingHint !== "" ? html`<small class="recording-hint">${recordingHint}</small>` : null}
           <div class="shortcut-actions">
-            <button class="primary" ?disabled=${this.loading || this.saving || !hasDraft || inputText.trim() === ""} @click=${() => { void this.saveShortcut(action); }}>Save</button>
+            <button class="primary" ?disabled=${this.loading || this.saving || !hasDraft || inputText.trim() === ""} @click=${() => { void this.saveShortcut(action); }}>${t("Save")}</button>
             <button ?disabled=${this.loading || this.saving} @click=${() => { void this.toggleRecording(action.id); }}>${this.recording?.actionId === action.id ? t("Cancel recording") : t("Record")}</button>
-            <button ?disabled=${this.loading || this.saving || configured === null} @click=${() => { void this.setShortcutNone(action); }}>None</button>
-            <button ?disabled=${this.loading || this.saving || !hasConfiguredShortcut} @click=${() => { void this.resetShortcut(action); }}>Reset</button>
+            <button ?disabled=${this.loading || this.saving || configured === null} @click=${() => { void this.setShortcutNone(action); }}>${t("None")}</button>
+            <button ?disabled=${this.loading || this.saving || !hasConfiguredShortcut} @click=${() => { void this.resetShortcut(action); }}>${t("Reset")}</button>
           </div>
         </div>
       </article>
@@ -170,7 +170,7 @@ export class SettingsShortcutsPanel extends LocalizedLitElement {
   private recordingHint(actionId: string): string {
     const recording = this.recording;
     if (recording?.actionId !== actionId) return "";
-    if (recording.tokens.length === 0) return "Recording: press Ctrl/⌘ or Alt with a key. Press Esc to cancel.";
+    if (recording.tokens.length === 0) return t("Recording: press Ctrl/⌘ or Alt with a key. Press Esc to cancel.");
     return `Recording: ${formatShortcut(recording.tokens.join(" "))}. Press another key to add a sequence, or wait to finish.`;
   }
 
@@ -188,7 +188,7 @@ export class SettingsShortcutsPanel extends LocalizedLitElement {
       return;
     }
     if (isComposerShortcut(action.id) && parsed.tokens.length !== 1) {
-      this.localError = "Composer send shortcuts must be a single key combination, not a sequence.";
+      this.localError = t("Composer send shortcuts must be a single key combination, not a sequence.");
       return;
     }
     this.localError = "";

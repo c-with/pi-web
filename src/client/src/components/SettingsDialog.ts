@@ -101,7 +101,7 @@ export class SettingsDialog extends LocalizedLitElement {
         <header class="settings-header">
           <div>
             <span class="eyebrow">${t("Settings")}</span>
-            <h1>PI WEB</h1>
+            <h1>${t("PI WEB")}</h1>
           </div>
           <button class="close-button" title=${t("Close settings")} aria-label=${t("Close settings")} @click=${() => this.onClose?.()}>×</button>
         </header>
