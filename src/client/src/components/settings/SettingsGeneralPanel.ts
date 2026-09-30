@@ -1,6 +1,8 @@
-import { css, html, LitElement, type PropertyValues, type TemplateResult } from "lit";
+import { css, html, type PropertyValues, type TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { DEFAULT_WORKSPACE_ATTACHMENTS_FOLDER, DEFAULT_WORKSPACE_UPLOADS_FOLDER, type PiWebConfigEnvOverrides, type PiWebConfigResponse, type PiWebConfigValues } from "../../api";
+import { locale, setLocale, t, type Locale } from "../../i18n/i18n";
+import { LocalizedLitElement } from "../../i18n/LocalizedLitElement";
 import "./SettingsPanelFrame";
 import type { SettingsNotice } from "./SettingsPanelFrame";
 import {
@@ -19,7 +21,7 @@ function generalDescription(targetLabel: string): TemplateResult {
 }
 
 @customElement("settings-general-panel")
-export class SettingsGeneralPanel extends LitElement {
+export class SettingsGeneralPanel extends LocalizedLitElement {
   @property({ attribute: false }) configResponse: PiWebConfigResponse | undefined;
   @property({ attribute: false }) machineConfigResponse: PiWebConfigResponse | undefined;
   @property({ type: Boolean }) loading = false;
@@ -61,6 +63,7 @@ export class SettingsGeneralPanel extends LitElement {
       >
         <div class="settings-sections">
           <slot name="appearance"></slot>
+          ${this.renderLanguageSettings()}
           ${this.renderGatewayServerSettings()}
           ${this.renderSelectedMachineAccessSettings()}
         </div>
@@ -68,24 +71,42 @@ export class SettingsGeneralPanel extends LitElement {
     `;
   }
 
+  private renderLanguageSettings(): TemplateResult {
+    return html`
+      <section class="settings-card" aria-label=${t("settings.language")}>
+        <div class="card-heading">
+          <h3>${t("settings.language")}</h3>
+          <p>${t("settings.language.description")}</p>
+        </div>
+        <label class="field">
+          <span class="field-heading"><span>${t("settings.language")}</span></span>
+          <select .value=${locale()} @change=${(event: Event) => { setLocale(toLocale(selectValue(event))); }}>
+            <option value="en">${t("language.english")}</option>
+            <option value="zh-CN">${t("language.simplifiedChinese")}</option>
+          </select>
+        </label>
+      </section>
+    `;
+  }
+
   private renderGatewayServerSettings(): TemplateResult {
     const config = this.configResponse;
     return html`
-      <section class="settings-card" aria-label="Gateway server settings">
+      <section class="settings-card" aria-label=${t("Gateway server settings")}>
         <div class="card-heading">
-          <h3>Gateway server</h3>
+          <h3>${t("Gateway server")}</h3>
           <p>Host, port, and allowed hosts are saved in the gateway config. Address changes require the web service to restart before the running server binds to the new address.</p>
         </div>
         ${config === undefined && this.loading ? html`<div class="loading-card">Loading gateway configuration…</div>` : html`
           <div class="config-path-card">
-            <span>Gateway config file</span>
+            <span>${t("Gateway config file")}</span>
             <code>${config?.path ?? "Unknown"}</code>
-            <small>${config?.exists === true ? "Existing file" : "This file will be created on save"}</small>
+            <small>${config?.exists === true ? t("Existing file") : t("This file will be created on save")}</small>
           </div>
           <form class="config-form" @submit=${(event: Event) => { void this.saveGatewayConfig(event); }}>
             <label class="field">
               <span class="field-heading">
-                <span>Host</span>
+                <span>${t("Host")}</span>
                 ${this.renderOverrideBadge("host")}
               </span>
               <input .value=${this.gatewayDraft.host} placeholder="127.0.0.1" autocomplete="off" spellcheck="false" @input=${(event: Event) => { this.updateGatewayDraft({ host: inputValue(event) }); }}>
@@ -94,7 +115,7 @@ export class SettingsGeneralPanel extends LitElement {
 
             <label class="field">
               <span class="field-heading">
-                <span>Port</span>
+                <span>${t("Port")}</span>
                 ${this.renderOverrideBadge("port")}
               </span>
               <input .value=${this.gatewayDraft.port} inputmode="numeric" pattern="[0-9]*" placeholder="8504" autocomplete="off" @input=${(event: Event) => { this.updateGatewayDraft({ port: inputValue(event) }); }}>
@@ -103,12 +124,12 @@ export class SettingsGeneralPanel extends LitElement {
 
             <div class="field">
               <span class="field-heading">
-                <span>Allowed hosts</span>
+                <span>${t("Allowed hosts")}</span>
                 ${this.renderOverrideBadge("allowedHosts")}
               </span>
               <select .value=${this.gatewayDraft.allowedHostsMode} @change=${(event: Event) => { this.updateGatewayDraft({ allowedHostsMode: selectValue(event) === "all" ? "all" : "list" }); }}>
-                <option value="list">Only listed hosts</option>
-                <option value="all">Allow every host</option>
+                <option value="list">${t("Only listed hosts")}</option>
+                <option value="all">${t("Allow every host")}</option>
               </select>
               <textarea .value=${this.gatewayDraft.allowedHostsText} ?disabled=${this.gatewayDraft.allowedHostsMode === "all"} rows="4" placeholder="example.local&#10;192.168.1.20" spellcheck="false" @input=${(event: Event) => { this.updateGatewayDraft({ allowedHostsText: textAreaValue(event) }); }}></textarea>
               <small>Enter one host per line, or choose “Allow every host” to write <code>true</code>.</small>
@@ -117,7 +138,7 @@ export class SettingsGeneralPanel extends LitElement {
             ${this.renderGatewayEffectiveConfig()}
 
             <footer class="form-actions">
-              <button class="primary" ?disabled=${this.loading || this.saving}>${this.saving ? "Saving…" : "Save gateway server config"}</button>
+              <button class="primary" ?disabled=${this.loading || this.saving}>${this.saving ? t("Saving…") : t("Save gateway server config")}</button>
             </footer>
           </form>
         `}
@@ -128,22 +149,22 @@ export class SettingsGeneralPanel extends LitElement {
   private renderSelectedMachineAccessSettings(): TemplateResult {
     const config = this.machineConfigResponse;
     return html`
-      <section class="settings-card" aria-label="Selected machine file access and upload settings">
+      <section class="settings-card" aria-label=${t("Selected machine file access and upload settings")}>
         <div class="card-heading">
-          <h3>Selected machine file access and uploads</h3>
+          <h3>${t("Selected machine file access and uploads")}</h3>
           <p>External filesystem roots and upload defaults are saved on ${this.targetLabel}.</p>
         </div>
         ${this.renderMachineMessages()}
         ${config === undefined ? html`<div class="loading-card">${this.machineLoading ? "Loading selected-machine file access config…" : "Selected-machine file access config is unavailable. Reload before saving file/upload settings."}</div>` : html`
           <div class="config-path-card">
-            <span>Selected machine config file</span>
+            <span>${t("Selected machine config file")}</span>
             <code>${config.path}</code>
-            <small>${config.exists ? "Existing file" : "This file will be created on save"}</small>
+            <small>${config.exists ? t("Existing file") : t("This file will be created on save")}</small>
           </div>
           <form class="config-form" @submit=${(event: Event) => { void this.saveMachineAccessConfig(event); }}>
             <label class="field">
               <span class="field-heading">
-                <span>External filesystem roots</span>
+                <span>${t("External filesystem roots")}</span>
               </span>
               <textarea .value=${this.machineDraft.allowedPathsText} rows="4" placeholder="~/SDKs&#10;/opt/reference" spellcheck="false" @input=${(event: Event) => { this.updateMachineDraft({ allowedPathsText: textAreaValue(event) }); }}></textarea>
               <small>Allowlist for absolute <code>@</code> completions and file explorer reads outside a workspace on ${this.targetLabel}. Enter one absolute path, Windows absolute path, or <code>~</code>-prefixed path per line. Leave empty to deny external paths by default.</small>
@@ -151,7 +172,7 @@ export class SettingsGeneralPanel extends LitElement {
 
             <label class="field">
               <span class="field-heading">
-                <span>Default upload folder</span>
+                <span>${t("Default upload folder")}</span>
               </span>
               <input .value=${this.machineDraft.uploadDefaultFolder} placeholder=${DEFAULT_WORKSPACE_UPLOADS_FOLDER} autocomplete="off" spellcheck="false" @input=${(event: Event) => { this.updateMachineDraft({ uploadDefaultFolder: inputValue(event) }); }}>
               <small>Workspace-relative folder for manual file uploads on ${this.targetLabel}. Leave empty to use PI WEB's default <code>${DEFAULT_WORKSPACE_UPLOADS_FOLDER}</code>.</small>
@@ -159,7 +180,7 @@ export class SettingsGeneralPanel extends LitElement {
 
             <label class="field">
               <span class="field-heading">
-                <span>Default attachments folder</span>
+                <span>${t("Default attachments folder")}</span>
               </span>
               <input .value=${this.machineDraft.attachmentDefaultFolder} placeholder=${DEFAULT_WORKSPACE_ATTACHMENTS_FOLDER} autocomplete="off" spellcheck="false" @input=${(event: Event) => { this.updateMachineDraft({ attachmentDefaultFolder: inputValue(event) }); }}>
               <small>Workspace-relative folder for prompt attachments saved into the workspace on ${this.targetLabel}. Leave empty to use PI WEB's default <code>${DEFAULT_WORKSPACE_ATTACHMENTS_FOLDER}</code>.</small>
@@ -168,7 +189,7 @@ export class SettingsGeneralPanel extends LitElement {
             ${this.renderMachineEffectiveConfig()}
 
             <footer class="form-actions">
-              <button class="primary" ?disabled=${this.machineLoading || this.saving}>${this.saving ? "Saving…" : "Save file/upload config"}</button>
+              <button class="primary" ?disabled=${this.machineLoading || this.saving}>${this.saving ? t("Saving…") : t("Save file/upload config")}</button>
             </footer>
           </form>
         `}
@@ -179,7 +200,7 @@ export class SettingsGeneralPanel extends LitElement {
   private panelNotices(): readonly SettingsNotice[] {
     const notices: SettingsNotice[] = [];
     const gatewayError = this.gatewayLocalError || this.error;
-    if (gatewayError !== "") notices.push({ type: "error", title: "Configuration", content: gatewayError });
+    if (gatewayError !== "") notices.push({ type: "error", title: t("Configuration"), content: gatewayError });
     if (this.savedMessage !== "") notices.push({ type: "success", content: this.savedMessage });
     return notices;
   }
@@ -192,18 +213,18 @@ export class SettingsGeneralPanel extends LitElement {
 
   private renderOverrideBadge(key: keyof PiWebConfigEnvOverrides): TemplateResult | null {
     if (this.configResponse?.envOverrides[key] !== true) return null;
-    return html`<span class="override-badge">environment override</span>`;
+    return html`<span class="override-badge">${t("environment override")}</span>`;
   }
 
   private renderGatewayEffectiveConfig(): TemplateResult {
     const effective = this.configResponse?.effectiveConfig ?? {};
     return html`
-      <section class="effective-card" aria-label="Effective gateway configuration summary">
-        <h3>Effective gateway settings after environment overrides</h3>
+      <section class="effective-card" aria-label=${t("Effective gateway configuration summary")}>
+        <h3>${t("Effective gateway settings after environment overrides")}</h3>
         <dl>
-          <div><dt>Host</dt><dd>${effective.host ?? html`<span class="muted">127.0.0.1 default</span>`}</dd></div>
-          <div><dt>Port</dt><dd>${effective.port ?? html`<span class="muted">8504 default</span>`}</dd></div>
-          <div><dt>Allowed hosts</dt><dd>${formatAllowedHosts(effective.allowedHosts)}</dd></div>
+          <div><dt>${t("Host")}</dt><dd>${effective.host ?? html`<span class="muted">127.0.0.1 default</span>`}</dd></div>
+          <div><dt>${t("Port")}</dt><dd>${effective.port ?? html`<span class="muted">8504 default</span>`}</dd></div>
+          <div><dt>${t("Allowed hosts")}</dt><dd>${formatAllowedHosts(effective.allowedHosts)}</dd></div>
         </dl>
       </section>
     `;
@@ -212,12 +233,12 @@ export class SettingsGeneralPanel extends LitElement {
   private renderMachineEffectiveConfig(): TemplateResult {
     const effective = this.machineConfigResponse?.effectiveConfig ?? {};
     return html`
-      <section class="effective-card" aria-label="Effective selected machine file access and upload summary">
-        <h3>Effective selected-machine settings</h3>
+      <section class="effective-card" aria-label=${t("Effective selected machine file access and upload summary")}>
+        <h3>${t("Effective selected-machine settings")}</h3>
         <dl>
-          <div><dt>External roots</dt><dd>${formatAllowedPaths(effective.pathAccess?.allowedPaths)}</dd></div>
-          <div><dt>Upload folder</dt><dd>${effective.uploads?.defaultFolder ?? html`<span class="muted">${DEFAULT_WORKSPACE_UPLOADS_FOLDER} default</span>`}</dd></div>
-          <div><dt>Attachments folder</dt><dd>${effective.attachments?.defaultFolder ?? html`<span class="muted">${DEFAULT_WORKSPACE_ATTACHMENTS_FOLDER} default</span>`}</dd></div>
+          <div><dt>${t("External roots")}</dt><dd>${formatAllowedPaths(effective.pathAccess?.allowedPaths)}</dd></div>
+          <div><dt>${t("Upload folder")}</dt><dd>${effective.uploads?.defaultFolder ?? html`<span class="muted">${DEFAULT_WORKSPACE_UPLOADS_FOLDER} default</span>`}</dd></div>
+          <div><dt>${t("Attachments folder")}</dt><dd>${effective.attachments?.defaultFolder ?? html`<span class="muted">${DEFAULT_WORKSPACE_ATTACHMENTS_FOLDER} default</span>`}</dd></div>
         </dl>
       </section>
     `;
@@ -301,18 +322,22 @@ export class SettingsGeneralPanel extends LitElement {
 }
 
 function formatAllowedHosts(value: PiWebConfigValues["allowedHosts"]): string | TemplateResult {
-  if (value === true) return "Any host";
-  if (Array.isArray(value)) return value.length === 0 ? html`<span class="muted">None listed</span>` : value.join(", ");
-  return html`<span class="muted">Unset</span>`;
+  if (value === true) return t("Any host");
+  if (Array.isArray(value)) return value.length === 0 ? html`<span class="muted">${t("None listed")}</span>` : value.join(", ");
+  return html`<span class="muted">${t("Unset")}</span>`;
 }
 
 function formatAllowedPaths(value: string[] | undefined): string | TemplateResult {
-  if (value === undefined || value.length === 0) return html`<span class="muted">External paths denied</span>`;
+  if (value === undefined || value.length === 0) return html`<span class="muted">${t("External paths denied")}</span>`;
   return value.join(", ");
 }
 
 function inputValue(event: Event): string {
   return event.target instanceof HTMLInputElement ? event.target.value : "";
+}
+
+function toLocale(value: string): Locale {
+  return value === "zh-CN" ? "zh-CN" : "en";
 }
 
 function selectValue(event: Event): string {

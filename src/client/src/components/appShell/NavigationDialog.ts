@@ -1,4 +1,6 @@
-import { LitElement, css, html, nothing, type PropertyValues } from "lit";
+import { LocalizedLitElement } from "../../i18n/LocalizedLitElement";
+import { t } from "../../i18n/i18n";
+import { css, html, nothing, type PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { paletteStyles } from "../paletteStyles";
 import { scrollWhenSelected } from "../scrollWhenSelected";
@@ -7,7 +9,7 @@ import type { AppMobileMainTab } from "./AppMobileMainTabs";
 import "../ModalSurface";
 
 @customElement("navigation-dialog")
-export class NavigationDialog extends LitElement {
+export class NavigationDialog extends LocalizedLitElement {
   @property({ attribute: false }) tabs: AppMobileMainTab[] = [];
   // Layout/search visibility must not narrow implicit-all pin edits.
   @property({ attribute: false }) pinUniverse?: readonly string[];
@@ -42,13 +44,13 @@ export class NavigationDialog extends LitElement {
     return html`
       <modal-surface .label=${"Navigation"} .initialFocus=${"input"} .onClose=${this.onClose} @keydown=${this.navigateDestinations}>
         <header>
-          <input aria-label="Search navigation" aria-describedby="navigation-selection" placeholder="Search navigation..." .value=${this.query} @input=${(event: Event) => {
+          <input aria-label=${t("Search navigation")} aria-describedby="navigation-selection" placeholder=${t("Search navigation...")} .value=${this.query} @input=${(event: Event) => {
             if (event.target instanceof HTMLInputElement) {
               this.query = event.target.value;
               this.selectedIndex = 0;
             }
           }}>
-          <button aria-label="Close" title="Close" @click=${this.onClose}>×</button>
+          <button aria-label=${t("Close")} title=${t("Close")} @click=${this.onClose}>×</button>
         </header>
         <span id="navigation-selection" class="sr-only" role="status" aria-live="polite" aria-atomic="true">${tabs.length === 0 ? "No destinations found." : `${tabs[this.selectedIndex]?.label ?? ""}, ${String(this.selectedIndex + 1)} of ${String(tabs.length)}`}</span>
         <h2>Navigation</h2>

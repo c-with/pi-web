@@ -1,4 +1,6 @@
-import { LitElement, html, type PropertyValues, type TemplateResult } from "lit";
+import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
+import { t } from "../i18n/i18n";
+import { html, type PropertyValues, type TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 import { trustApi } from "../api";
@@ -22,7 +24,7 @@ interface WorkspaceTrustState {
 }
 
 @customElement("workspace-list")
-export class WorkspaceList extends LitElement implements KeyboardNavigableSection {
+export class WorkspaceList extends LocalizedLitElement implements KeyboardNavigableSection {
   @property({ attribute: false }) workspaces: Workspace[] = [];
   @property({ attribute: false }) selected?: Workspace;
   /** Machine the listed workspaces belong to; targets the trust API. */
@@ -132,7 +134,7 @@ export class WorkspaceList extends LitElement implements KeyboardNavigableSectio
   }
 
   private renderHeading() {
-    if (!this.collapsible) return html`<span>Workspaces</span>`;
+    if (!this.collapsible) return html`<span>${t("Workspaces")}</span>`;
     const selectedSummary = this.selected === undefined ? "No workspace selected" : `${this.selected.label}${this.selected.isMain ? " · main" : ""} · ${this.selected.path}`;
     const selectedTitle = this.selected?.path ?? selectedSummary;
     return html`<button class="section-toggle" aria-expanded=${String(!this.collapsed)} @click=${() => { this.onToggleCollapsed?.(); }}><span class="section-title"><span class="section-name">${this.collapsed ? "▸" : "▾"} Workspaces</span>${this.collapsed ? html`<small class="section-selected" title=${selectedTitle}>${selectedSummary}</small>` : null}</span><small class="section-count">${this.workspaces.length}</small></button>`;
@@ -167,7 +169,7 @@ export class WorkspaceList extends LitElement implements KeyboardNavigableSectio
       <div class="action-menu">
         <button
           class="action-menu-toggle"
-          title="Workspace actions and details"
+          title=${t("Workspace actions and details")}
           aria-label=${`Actions and details for ${label}`}
           aria-expanded=${String(open)}
           aria-controls=${menuId}
@@ -194,7 +196,7 @@ export class WorkspaceList extends LitElement implements KeyboardNavigableSectio
         `}
         ${this.renderTrustToggle(workspace)}
         ${canDeleteWorkspace(workspace) ? html`
-          <button class="danger" title=${deleting ? "Workspace removal in progress" : actionLabel} ?disabled=${deleting} @click=${() => { this.delete(workspace); }}>${deleting ? "Removing…" : actionLabel}</button>
+          <button class="danger" title=${deleting ? "Workspace removal in progress" : actionLabel} ?disabled=${deleting} @click=${() => { this.delete(workspace); }}>${deleting ? t("Removing…") : actionLabel}</button>
         ` : null}
       </div>
     `;
@@ -220,7 +222,7 @@ export class WorkspaceList extends LitElement implements KeyboardNavigableSectio
           />
         </label>
         <div class="action-menu-description" id=${helpId}>
-          <a href="https://pi.dev/docs/latest/security" target="_blank" rel="noreferrer">Learn about project trust</a>
+          <a href="https://pi.dev/docs/latest/security" target="_blank" rel="noreferrer">${t("Learn about project trust")}</a>
         </div>
         ${trust?.error === undefined ? null : html`<div class="action-menu-description action-menu-error" id=${errorId} role="alert">${trust.error}</div>`}
       </div>
@@ -266,7 +268,7 @@ export class WorkspaceList extends LitElement implements KeyboardNavigableSectio
     return html`
       <dl class="workspace-menu-details">
         <div class="workspace-detail-row">
-          <dt>Workspace</dt>
+          <dt>${t("Workspace")}</dt>
           <dd>${label}${this.renderDetailCopyButton(`${workspace.id}:label`, workspace.label, "Copy workspace label")}</dd>
         </div>
         <div class="workspace-detail-row">
@@ -275,7 +277,7 @@ export class WorkspaceList extends LitElement implements KeyboardNavigableSectio
         </div>
         ${items.length === 0 ? null : html`
           <div class="workspace-detail-row">
-            <dt>Details</dt>
+            <dt>${t("Details")}</dt>
             <dd><span class="workspace-label">${renderWorkspaceLabelInlineItems(items)}</span></dd>
           </div>
         `}
@@ -285,7 +287,7 @@ export class WorkspaceList extends LitElement implements KeyboardNavigableSectio
 
   private renderDetailCopyButton(key: string, value: string, action: string): TemplateResult {
     const copied = this.copiedDetailKey === key;
-    const label = copied ? "Copied" : action;
+    const label = copied ? t("Copied") : action;
     return html`
       <button type="button" class="detail-copy" title=${label} aria-label=${label} @click=${() => { void this.copyDetail(key, value); }}>
         <span aria-hidden="true">${copied ? "✓" : "⧉"}</span>

@@ -1,4 +1,6 @@
-import { LitElement, html, nothing } from "lit";
+import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
+import { t } from "../i18n/i18n";
+import { html, nothing } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 import { keyed } from "lit/directives/keyed.js";
@@ -194,7 +196,7 @@ function chatMessageModelLabel(message: ChatLine): string | undefined {
 }
 
 @customElement("chat-view")
-export class ChatView extends LitElement {
+export class ChatView extends LocalizedLitElement {
   @property({ attribute: false }) messages: ChatLine[] = [];
   @property() sessionId = "";
   @property() sessionCwd = "";
@@ -519,7 +521,7 @@ export class ChatView extends LitElement {
     const totalCount = notificationInboxTotalCount(inbox);
     if (totalCount === 0 && !hasPendingOverlay && !retainsFocusTarget) return null;
     const collapsed = notificationTrayIsCollapsed(this.collapsedNotificationTargetKeys, inbox);
-    const toggleLabel = collapsed ? "Expand notifications" : "Collapse notifications";
+    const toggleLabel = collapsed ? t("Expand notifications") : t("Collapse notifications");
     return html`
       <section class=${`notification-tray${collapsed ? " collapsed" : ""}`} role="region" aria-labelledby="session-notifications-heading" @focusout=${(event: FocusEvent) => { this.releaseEmptyNotificationTray(event); }}>
         <header class="notification-header" data-notification-focus="header" tabindex="-1">
@@ -679,7 +681,7 @@ export class ChatView extends LitElement {
                 type="button"
                 class="session-warning-dismiss"
                 title="Don't show this warning again"
-                aria-label="Dismiss warning"
+                aria-label=${t("Dismiss warning")}
                 @click=${() => { this.onDismissWarning?.(dismissId); }}
               >×</button>
             `}
@@ -726,7 +728,7 @@ export class ChatView extends LitElement {
       return html`
         <div class="activity-dock active" aria-live="polite">
           <span class="dot"></span>
-          <span class="activity-text">Sending your message…</span>
+          <span class="activity-text">${t("Sending your message…")}</span>
         </div>
       `;
     }
@@ -768,19 +770,19 @@ export class ChatView extends LitElement {
           <div class="queued-message">
             <div class="queued-message-header">
               <div class="queued-message-meta">
-                <span class="queued-kind">${message.kind === "steer" ? "Steer" : "Queue"} ${String(section.messages.slice(0, index + 1).filter((entry) => entry.kind === message.kind).length)}</span>
+                <span class="queued-kind">${message.kind === "steer" ? t("Steer") : t("Queue")} ${String(section.messages.slice(0, index + 1).filter((entry) => entry.kind === message.kind).length)}</span>
                 ${queuedMessageAttachmentLabel(message) === undefined ? nothing : html`
-                  <span class="queued-attachments" title="Attachments included with this queued message"><span aria-hidden="true">📎</span> ${queuedMessageAttachmentLabel(message)}</span>
+                  <span class="queued-attachments" title=${t("Attachments included with this queued message")}><span aria-hidden="true">📎</span> ${queuedMessageAttachmentLabel(message)}</span>
                 `}
               </div>
               <div class="queued-message-actions">
-                <button type="button" class="queued-action" aria-label="Copy queued message" title="Copy message" @click=${async () => {
-                  this.queuedCopyFeedback = await writeClipboardText(message.text) ? "Copied" : "Could not copy message";
+                <button type="button" class="queued-action" aria-label=${t("Copy queued message")} title=${t("Copy message")} @click=${async () => {
+                  this.queuedCopyFeedback = await writeClipboardText(message.text) ? t("Copied") : t("Could not copy message");
                 }}>${renderCopyIcon()}</button>
                 ${section.source !== "server" || this.onQueuedMessageAction === undefined ? nothing : html`
-                  <button type="button" class="queued-action" ?disabled=${actionsDisabled} title=${unavailableReason ?? (message.kind === "steer" ? "Move to the end of the follow-up queue" : "Move to the end of the steering queue")} aria-label=${message.kind === "steer" ? "Switch to Queue" : "Switch to Steer"} @click=${() => { this.actOnQueuedMessage("toggle", index, section.messages); }}>${message.kind === "steer" ? renderQueueIcon() : renderSteerIcon()}</button>
-                  <button type="button" class="queued-action" ?disabled=${actionsDisabled} aria-label="Recall queued message" title=${unavailableReason ?? "Recall this message's text and clear later queued messages"} @click=${() => { this.actOnQueuedMessage("edit", index, section.messages); }}>${renderGoBackIcon()}</button>
-                  <button type="button" class="queued-action" ?disabled=${actionsDisabled} aria-label="Remove queued message" title=${unavailableReason ?? "Remove only this message"} @click=${() => { this.actOnQueuedMessage("remove", index, section.messages); }}>${renderTrashIcon()}</button>
+                  <button type="button" class="queued-action" ?disabled=${actionsDisabled} title=${unavailableReason ?? (message.kind === "steer" ? t("Move to the end of the follow-up queue") : t("Move to the end of the steering queue"))} aria-label=${message.kind === "steer" ? t("Switch to Queue") : t("Switch to Steer")} @click=${() => { this.actOnQueuedMessage("toggle", index, section.messages); }}>${message.kind === "steer" ? renderQueueIcon() : renderSteerIcon()}</button>
+                  <button type="button" class="queued-action" ?disabled=${actionsDisabled} aria-label=${t("Recall queued message")} title=${unavailableReason ?? t("Recall this message's text and clear later queued messages")} @click=${() => { this.actOnQueuedMessage("edit", index, section.messages); }}>${renderGoBackIcon()}</button>
+                  <button type="button" class="queued-action" ?disabled=${actionsDisabled} aria-label=${t("Remove queued message")} title=${unavailableReason ?? t("Remove only this message")} @click=${() => { this.actOnQueuedMessage("remove", index, section.messages); }}>${renderTrashIcon()}</button>
                 `}
               </div>
             </div>
@@ -850,7 +852,7 @@ export class ChatView extends LitElement {
     if (!this.isCompacting) return null;
     return html`
       <aside class="session-activity compacting" aria-live="polite">
-        <strong>Compacting history…</strong>
+        <strong>${t("Compacting history…")}</strong>
         <span>The agent is summarizing earlier context. New prompts will be queued until compaction finishes.</span>
         ${this.pendingMessageCount > 0 ? html`<small>${this.pendingMessageCount} queued ${this.pendingMessageCount === 1 ? "message" : "messages"}</small>` : null}
       </aside>
@@ -876,15 +878,15 @@ export class ChatView extends LitElement {
 
   private renderHistoryBoundary() {
     const range = this.historyRangeLabel();
-    if (this.loadingMore) return html`<div class="history-boundary"><span>Loading earlier messages…</span>${range}</div>`;
+    if (this.loadingMore) return html`<div class="history-boundary"><span>${t("Loading earlier messages…")}</span>${range}</div>`;
     if (this.hasMore) return html`
       <div class="history-boundary">
         <button type="button" class="history-load-button" ?disabled=${this.loadMoreRequested} @click=${() => { this.requestLoadMore(); }}>Load earlier messages</button>
-        ${this.behaviors.automaticHistory ? html`<span>Scroll up to load earlier messages</span>` : null}
+        ${this.behaviors.automaticHistory ? html`<span>${t("Scroll up to load earlier messages")}</span>` : null}
         ${range}
       </div>
     `;
-    if (this.messages.length) return html`<div class="history-boundary"><span>Beginning of session</span>${range}</div>`;
+    if (this.messages.length) return html`<div class="history-boundary"><span>${t("Beginning of session")}</span>${range}</div>`;
     return null;
   }
 
@@ -978,7 +980,7 @@ export class ChatView extends LitElement {
     if (actions.length === 0) return null;
     const feedback = this.messageActionFeedback;
     return html`
-      <div class="msg-actions" aria-label="Message actions">
+      <div class="msg-actions" aria-label=${t("Message actions")}>
         ${actions.map(({ action, enabled, ariaLabel }) => {
           const presentation = feedback?.machineId === this.machineId && feedback.sessionId === this.sessionId && feedback.key === key && feedback.actionId === action.id
             ? feedback.presentation : undefined;

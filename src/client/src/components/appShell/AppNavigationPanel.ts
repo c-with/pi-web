@@ -1,4 +1,6 @@
-import { LitElement, css, html } from "lit";
+import { LocalizedLitElement } from "../../i18n/LocalizedLitElement";
+import { t } from "../../i18n/i18n";
+import { css, html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import type { Machine, MachineHealth, Project, SessionActivity, SessionInfo, SessionStatus, Workspace } from "../../api";
 import type { MachineStatusSnapshot } from "../../../../shared/machineStatus";
@@ -16,7 +18,7 @@ import "../SessionList";
 export type NavigationFocusTarget = NavigationSection | "chat";
 
 @customElement("app-navigation-panel")
-export class AppNavigationPanel extends LitElement {
+export class AppNavigationPanel extends LocalizedLitElement {
   @property({ attribute: false }) machines: Machine[] = [];
   @property({ attribute: false }) selectedMachine?: Machine;
   /** PWA display mode: surfaces the single-machine identity bubble in the header. */
@@ -153,7 +155,7 @@ export class AppNavigationPanel extends LitElement {
         ></machine-switcher>
         <div class="header-actions">
           ${this.refreshControl}
-          <button title="Show Actions" aria-label="Show Actions" @click=${() => { this.onShowActions?.(); }}>Actions</button>
+          <button title=${t("Show Actions")} aria-label=${t("Show Actions")} @click=${() => { this.onShowActions?.(); }}>Actions</button>
         </div>
       </header>
       ${this.compact && shouldShowMachinesSection(this.machines) ? html`

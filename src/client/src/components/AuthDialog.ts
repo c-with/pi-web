@@ -1,4 +1,6 @@
-import { LitElement, css, html, nothing, type PropertyValues, type TemplateResult } from "lit";
+import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
+import { t } from "../i18n/i18n";
+import { css, html, nothing, type PropertyValues, type TemplateResult } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 import type { AuthDialogState } from "../appState";
 import type { AuthProviderOption, OAuthFlowState } from "../api";
@@ -20,7 +22,7 @@ interface AuthDialogOption {
 }
 
 @customElement("auth-dialog")
-export class AuthDialog extends LitElement {
+export class AuthDialog extends LocalizedLitElement {
   @property({ attribute: false }) state?: AuthDialogState;
   @property({ attribute: false }) onChooseMethod?: (authType: "oauth" | "api_key") => void;
   @property({ attribute: false }) onSelectProvider?: (providerId: string, authType: "oauth" | "api_key") => void;
@@ -46,7 +48,7 @@ export class AuthDialog extends LitElement {
       >
         <header>
           <strong>${this.dialogTitle(state)}</strong>
-          <button title="Close" aria-label="Close" @click=${() => { this.cancel(); }}>×</button>
+          <button title=${t("Close")} aria-label=${t("Close")} @click=${() => { this.cancel(); }}>×</button>
         </header>
         ${this.renderBody(state)}
       </modal-surface>
@@ -144,10 +146,10 @@ export class AuthDialog extends LitElement {
 
   private dialogTitle(state: AuthDialogState): string {
     switch (state.step) {
-      case "method": return "Configure provider authentication";
-      case "providers": return state.authType === undefined ? "Select provider authentication" : state.authType === "oauth" ? "Select subscription provider" : "Select credential provider";
+      case "method": return t("Configure provider authentication");
+      case "providers": return state.authType === undefined ? t("Select provider authentication") : state.authType === "oauth" ? t("Select subscription provider") : t("Select credential provider");
       case "oauth": return `Login to ${state.flow.providerName}`;
-      case "logout": return "Remove stored provider authentication";
+      case "logout": return t("Remove stored provider authentication");
     }
   }
 
@@ -161,7 +163,7 @@ export class AuthDialog extends LitElement {
       ` : null}
       <div class="options">
         ${options.length === 0 ? html`<div class="empty">${state.step === "logout" ? "No stored credentials. Environment variables and models.json settings are unchanged." : "No providers available."}</div>`
-        : visible.length === 0 ? html`<div class="empty">No matching providers</div>`
+        : visible.length === 0 ? html`<div class="empty">${t("No matching providers")}</div>`
         : visible.map((option, index) => html`
           <button
             class=${index === this.selectedIndex ? "selected" : ""}
@@ -194,13 +196,13 @@ export class AuthDialog extends LitElement {
           <p>Open this authorization link:</p>
           <p><a href=${flow.auth.url} target="_blank" rel="noreferrer">${flow.auth.url}</a></p>
           ${flow.auth.deviceCode !== undefined ? html`
-            <p class="warning">Enter code: <code>${flow.auth.deviceCode.userCode}</code></p>
+            <p class="warning">${t("Enter code:")} <code>${flow.auth.deviceCode.userCode}</code></p>
           ` : flow.auth.instructions !== undefined ? html`<p class="warning">${flow.auth.instructions}</p>` : null}
-        ` : html`<p>Starting login flow…</p>`}
+        ` : html`<p>${t("Starting login flow…")}</p>`}
         ${showPasteNote ? html`<p class="warning">After you approve, the redirect page will probably fail to load — that is expected. Copy the full URL from your browser's address bar and paste it below.</p>` : null}
         ${flow.progress.length > 0 ? html`<ul class="progress">${flow.progress.map((line) => html`<li>${line}</li>`)}</ul>` : null}
         ${flow.info?.map((item) => item.links === undefined || item.links.length === 0 ? null : html`
-          <div class="info-links" aria-label="Related information">
+          <div class="info-links" aria-label=${t("Related information")}>
             ${item.links.map((link) => html`<a href=${link.url} target="_blank" rel="noreferrer" title=${item.message}>${link.label ?? link.url}</a>`)}
           </div>
         `) ?? null}
@@ -219,7 +221,7 @@ export class AuthDialog extends LitElement {
           `)}</div>
         ` : null}
         ${state.error !== undefined && state.error !== "" ? html`<div class="error-text">${state.error}</div>` : null}
-        ${flow.status === "error" || flow.status === "cancelled" ? html`<div class="error-text">${flow.error ?? flow.status}</div><div class="actions"><button @click=${() => { this.cancel(); }}>Close</button></div>` : null}
+        ${flow.status === "error" || flow.status === "cancelled" ? html`<div class="error-text">${flow.error ?? flow.status}</div><div class="actions"><button @click=${() => { this.cancel(); }}>${t("Close")}</button></div>` : null}
         ${prompt === undefined && select === undefined && flow.status === "running" ? html`<div class="actions"><button @click=${() => { this.onOAuthCancel?.(); }}>Cancel</button></div>` : null}
       </div>
     `;

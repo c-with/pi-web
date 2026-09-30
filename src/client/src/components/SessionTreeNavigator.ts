@@ -1,4 +1,6 @@
-import { LitElement, css, html, nothing, type PropertyValues, type TemplateResult } from "lit";
+import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
+import { t } from "../i18n/i18n";
+import { css, html, nothing, type PropertyValues, type TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import type { SessionTreeForkResult, SessionTreeNavigateResult, SessionTreeNodeKind, SessionTreeSnapshot, SessionTreeSummaryChoice } from "../api";
 import { SESSION_TREE_CUSTOM_INSTRUCTIONS_MAX_LENGTH } from "../../../shared/apiTypes";
@@ -33,12 +35,12 @@ const SESSION_TREE_KIND_PRESENTATION = {
   "thinking-level-change": { label: "Thinking", tone: "metadata", bookkeeping: true },
   "session-info": { label: "Session info", tone: "metadata", bookkeeping: true },
   label: { label: "Label", tone: "metadata", bookkeeping: true },
-  custom: { label: "Custom", tone: "metadata", bookkeeping: true },
+  custom: { label: t("Custom"), tone: "metadata", bookkeeping: true },
   other: { label: "Other", tone: "metadata", bookkeeping: true },
 } as const satisfies Record<SessionTreeNodeKind, SessionTreeKindPresentation>;
 
 @customElement("session-tree-navigator")
-export class SessionTreeNavigator extends LitElement {
+export class SessionTreeNavigator extends LocalizedLitElement {
   @property({ attribute: false }) tree: SessionTreeSnapshot = EMPTY_TREE;
   @property({ attribute: false }) onNavigate?: (targetId: string, summaryChoice: SessionTreeSummaryChoice) => Promise<SessionTreeNavigateResult>;
   @property({ attribute: false }) onFork?: (entryId: string) => Promise<SessionTreeForkResult>;
@@ -77,7 +79,7 @@ export class SessionTreeNavigator extends LitElement {
   override render(): TemplateResult {
     return html`
       <modal-surface
-        .label=${"Navigate session tree"}
+        .label=${t("Navigate session tree")}
         .initialFocus=${this.selectedId === undefined ? ".close-button" : "[data-tree-node-id][tabindex='0']"}
         ?busy=${this.busy}
         .onClose=${() => { this.requestDismissal(); }}
@@ -85,10 +87,10 @@ export class SessionTreeNavigator extends LitElement {
       >
         <header>
           <div>
-            <span class="eyebrow">Conversation history</span>
-            <h1>Navigate session tree</h1>
+            <span class="eyebrow">${t("Conversation history")}</span>
+            <h1>${t("Navigate session tree")}</h1>
           </div>
-          <button class="close-button" ?disabled=${this.busy} title="Close session tree" aria-label="Close session tree" @click=${() => { this.onCancel?.(); }}>×</button>
+          <button class="close-button" ?disabled=${this.busy} title=${t("Close session tree")} aria-label=${t("Close session tree")} @click=${() => { this.onCancel?.(); }}>×</button>
         </header>
         ${this.step === "tree" ? this.renderTreeStep() : this.renderActionStep()}
         ${this.renderFooter()}
@@ -102,9 +104,9 @@ export class SessionTreeNavigator extends LitElement {
       <div class="body tree-step">
         <div class="tree-intro">
           <p>Select the history entry where you would like to continue.</p>
-          <div class="legend" aria-label="Session tree markers">
-            <span><span class="marker active-path-marker" aria-hidden="true"></span>Active path</span>
-            <span><span class="marker active-leaf-marker" aria-hidden="true"></span>Active leaf</span>
+          <div class="legend" aria-label=${t("Session tree markers")}>
+            <span><span class="marker active-path-marker" aria-hidden="true"></span>${t("Active path")}</span>
+            <span><span class="marker active-leaf-marker" aria-hidden="true"></span>${t("Active leaf")}</span>
           </div>
         </div>
         ${this.statusMessage === "" ? null : html`<div class="dialog-status" role="status">${this.statusMessage}</div>`}
@@ -112,7 +114,7 @@ export class SessionTreeNavigator extends LitElement {
         ${rows.length === 0 ? html`
           <div class="empty" role="status">This session does not contain any selectable history entries.</div>
         ` : html`
-          <div class="tree" role="tree" aria-label="Complete session history">
+          <div class="tree" role="tree" aria-label=${t("Complete session history")}>
             ${rows.map((row) => this.renderTreeRow(row))}
           </div>
         `}
@@ -148,15 +150,15 @@ export class SessionTreeNavigator extends LitElement {
       >
         <span
           class=${`disclosure${row.childIds.length === 0 ? " leaf" : ""}`}
-          title=${row.childIds.length === 0 ? "No child entries" : expanded ? "Collapse branch" : "Expand branch"}
+          title=${row.childIds.length === 0 ? t("No child entries") : expanded ? t("Collapse branch") : t("Expand branch")}
           aria-hidden="true"
           @click=${(event: MouseEvent) => { this.toggleNode(row.node.id, event); }}
         >${row.childIds.length === 0 ? "·" : expanded ? "▾" : "▸"}</span>
         <span class="metadata">
           ${this.renderKindBadge(kindPresentation)}
           <span class="badges">
-            ${row.activePath && !row.activeLeaf ? html`<span class="badge path">Active path</span>` : null}
-            ${row.activeLeaf ? html`<span class="badge leaf">Active leaf</span>` : null}
+            ${row.activePath && !row.activeLeaf ? html`<span class="badge path">${t("Active path")}</span>` : null}
+            ${row.activeLeaf ? html`<span class="badge leaf">${t("Active leaf")}</span>` : null}
           </span>
         </span>
         <span class="entry">
@@ -179,8 +181,8 @@ export class SessionTreeNavigator extends LitElement {
       <div class="body confirmation-step">
         <div class="confirmation-card">
           <div>
-            <span class="eyebrow">Selected entry</span>
-            <h2>Choose how to continue</h2>
+            <span class="eyebrow">${t("Selected entry")}</span>
+            <h2>${t("Choose how to continue")}</h2>
           </div>
           ${selectedNode === undefined ? html`<div class="empty">The selected history entry is no longer available.</div>` : html`
             <div class="selected-entry">
@@ -196,7 +198,7 @@ export class SessionTreeNavigator extends LitElement {
           </fieldset>
           ${this.operation === "continue" ? html`
             <fieldset ?disabled=${this.busy}>
-              <legend>Abandoned branch summary</legend>
+              <legend>${t("Abandoned branch summary")}</legend>
               ${this.renderSummaryOption("none", "No summary", "Switch branches without adding a summary entry.")}
               ${this.renderSummaryOption("default", "Summarize", "Ask Pi to summarize the context being left behind.")}
               ${this.renderSummaryOption("custom", "Summarize with custom focus", "Guide Pi toward the details that matter for the new branch.")}
@@ -285,7 +287,7 @@ export class SessionTreeNavigator extends LitElement {
         <button ?disabled=${this.busy} @click=${() => { this.returnToTree(); }}>Back</button>
         <span class="footer-spacer"></span>
         ${this.busy && summarizing ? html`
-          <button class="danger" ?disabled=${this.aborting} @click=${() => { void this.abortNavigation(); }}>${this.aborting ? "Cancelling…" : "Cancel summarization"}</button>
+          <button class="danger" ?disabled=${this.aborting} @click=${() => { void this.abortNavigation(); }}>${this.aborting ? t("Cancelling…") : t("Cancel summarization")}</button>
         ` : null}
         <button class="primary" ?disabled=${this.busy || this.selectedId === undefined} @click=${() => { void this.submitSelectedOperation(); }}>
           ${this.primaryActionLabel()}
@@ -390,9 +392,9 @@ export class SessionTreeNavigator extends LitElement {
   }
 
   private primaryActionLabel(): string {
-    if (!this.busy) return this.operation === "continue" ? "Continue from here" : "Fork into new session";
-    if (this.operation === "fork") return "Forking…";
-    return this.summaryMode === "none" ? "Continuing…" : "Summarizing…";
+    if (!this.busy) return this.operation === "continue" ? t("Continue from here") : t("Fork into new session");
+    if (this.operation === "fork") return t("Forking…");
+    return this.summaryMode === "none" ? t("Continuing…") : t("Summarizing…");
   }
 
   private submitSelectedOperation(): Promise<void> {

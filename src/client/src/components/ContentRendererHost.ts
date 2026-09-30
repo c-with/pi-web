@@ -1,4 +1,6 @@
-import { LitElement, css, html, type PropertyValues, type TemplateResult } from "lit";
+import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
+import { t } from "../i18n/i18n";
+import { css, html, type PropertyValues, type TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import type { ContentRendererContribution } from "../../../plugin-api";
 import type { ContentRendererChoice } from "../plugins/contentRenderers";
@@ -17,7 +19,7 @@ function isTemplateResult(value: unknown): value is TemplateResult {
 
 /** Owns source access independently of the plugin's rendering success. */
 @customElement("pi-web-content-renderer")
-export class ContentRendererHost extends LitElement {
+export class ContentRendererHost extends LocalizedLitElement {
   // Chat-private source controls; public plugin consumers retain legacy defaults.
   @property({ attribute: false }) codeBlocks: CodeBlockSourcePolicy | undefined;
   @property({ type: Boolean, reflect: true, attribute: "external-controls" }) externalControls = false;
@@ -124,7 +126,7 @@ export class ContentRendererHost extends LitElement {
     const fail = (error: unknown): void => {
       if (controller.signal.aborted || this.controller !== controller) return;
       console.warn(`Content renderer ${this.renderer?.id ?? "unknown"} failed`, error);
-      this.failure = "Preview failed. Raw source is shown below.";
+      this.failure = t("Preview failed. Raw source is shown below.");
       this.cancelPreview();
     };
     try {
@@ -143,7 +145,7 @@ export class ContentRendererHost extends LitElement {
   private async copy(): Promise<void> {
     const text = this.text;
     const copied = await writeClipboardText(text);
-    if (this.isConnected && text === this.text) this.copyStatus = copied ? "Copied source" : "Failed to copy source";
+    if (this.isConnected && text === this.text) this.copyStatus = copied ? t("Copied source") : t("Failed to copy source");
   }
 
   override render() {
@@ -156,16 +158,16 @@ export class ContentRendererHost extends LitElement {
     const sourceClass = this.codeBlocks?.overflow === "wrap" ? "source-wrap" : "source-scroll";
     const choice = this.choices.find(({ id }) => id === this.selectedId);
     return html`<div class=${this.externalControls ? "" : "code-block-frame"}>
-      ${this.externalControls ? null : html`<div class="controls code-block-header" role="group" aria-label="Code block controls">
+      ${this.externalControls ? null : html`<div class="controls code-block-header" role="group" aria-label=${t("Code block controls")}>
         ${this.choices.length < 2
           ? choice === undefined ? null : html`<span class="code-block-label" title=${choice.label}>${choice.label}</span>`
           : html`
-          <select class="code-block-label" aria-label="Diagram renderer" @change=${(event: Event) => { if (event.target instanceof HTMLSelectElement) this.selectRenderer(event.target.value); }}>
+          <select class="code-block-label" aria-label=${t("Diagram renderer")} @change=${(event: Event) => { if (event.target instanceof HTMLSelectElement) this.selectRenderer(event.target.value); }}>
             ${this.choices.map(({ id, label }) => html`<option value=${id} .selected=${id === this.selectedId}>${label}</option>`)}
           </select>
         `}
         ${this.renderer === undefined ? null : html`
-          <button type="button" aria-controls="content" aria-pressed=${!showingRaw} @click=${() => { this.setRaw(false); }}>${this.renderer.renderMode === "automatic" ? "Preview" : "Render"}</button>
+          <button type="button" aria-controls="content" aria-pressed=${!showingRaw} @click=${() => { this.setRaw(false); }}>${this.renderer.renderMode === "automatic" ? t("Preview") : t("Render")}</button>
           <button type="button" aria-controls="content" aria-pressed=${showingRaw} @click=${() => { this.setRaw(true); }}>Raw</button>
         `}
         ${this.codeBlocks?.copy === false ? null : html`
@@ -177,9 +179,9 @@ export class ContentRendererHost extends LitElement {
         ${diagnostic === undefined ? null : html`<p role="status">${diagnostic}</p>`}
         ${showingRaw
           ? this.codeBlocks?.presentation === "plain"
-            ? html`<div class=${`plain-code-block ${sourceClass}`} tabindex="0" aria-label="Raw source">${this.text}</div>`
-            : html`<pre class=${sourceClass} tabindex="0" aria-label="Raw source"><code>${this.text}</code></pre>`
-          : html`<div class="preview" tabindex="0" aria-label="Diagram preview">${preview}</div>`}
+            ? html`<div class=${`plain-code-block ${sourceClass}`} tabindex="0" aria-label=${t("Raw source")}>${this.text}</div>`
+            : html`<pre class=${sourceClass} tabindex="0" aria-label=${t("Raw source")}><code>${this.text}</code></pre>`
+          : html`<div class="preview" tabindex="0" aria-label=${t("Diagram preview")}>${preview}</div>`}
       </div>
     </div>`;
   }

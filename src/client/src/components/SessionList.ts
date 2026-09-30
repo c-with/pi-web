@@ -1,4 +1,6 @@
-import { LitElement, css, html, type PropertyValues } from "lit";
+import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
+import { t } from "../i18n/i18n";
+import { css, html, type PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 import type { SessionActivity, SessionInfo, SessionStatus } from "../api";
@@ -42,7 +44,7 @@ interface AgentAttention {
 }
 
 @customElement("session-list")
-export class SessionList extends LitElement implements KeyboardNavigableSection {
+export class SessionList extends LocalizedLitElement implements KeyboardNavigableSection {
   @property({ attribute: false }) sessions: SessionInfo[] = [];
   @property({ attribute: false }) pinnedRootIds: string[] = [];
   @property({ attribute: false }) onPin?: (session: SessionInfo) => void;
@@ -338,7 +340,7 @@ export class SessionList extends LitElement implements KeyboardNavigableSection 
     if (!this.collapsible) {
       return html`
         <h2>
-          <span class="plain-heading">Sessions</span>
+          <span class="plain-heading">${t("Sessions")}</span>
           ${this.renderUnreadCount(unreadCount)}
           ${this.renderCurrentSelectionButton(currentSessions)}
           ${this.renderCleanupButton()}
@@ -373,11 +375,11 @@ export class SessionList extends LitElement implements KeyboardNavigableSection 
   }
 
   private renderCleanupButton() {
-    return html`<button class="cleanup-entry" title="Preview session cleanup" @click=${(event: MouseEvent) => { event.stopPropagation(); this.onCleanup?.(); }}>Clean up</button>`;
+    return html`<button class="cleanup-entry" title=${t("Preview session cleanup")} @click=${(event: MouseEvent) => { event.stopPropagation(); this.onCleanup?.(); }}>${t("Clean up")}</button>`;
   }
 
   private renderStartButton() {
-    const title = this.startingCount > 0 ? "Start another session" : "Start a new session";
+    const title = this.startingCount > 0 ? t("Start another session") : t("Start a new session");
     return html`<button class="start-session-button" title=${title} aria-label=${title} ?disabled=${!this.canStart} @click=${(event: MouseEvent) => { event.stopPropagation(); this.onStart?.(); }}>+</button>`;
   }
 
@@ -415,7 +417,7 @@ export class SessionList extends LitElement implements KeyboardNavigableSection 
         <div class="bulk-row selecting">
           ${this.renderSelectionControls("current")}
           <div class="bulk-actions">
-            <button ?disabled=${archivableSessions.length === 0} @click=${() => { this.archiveSelectedCurrent(); }}>Archive</button>
+            <button ?disabled=${archivableSessions.length === 0} @click=${() => { this.archiveSelectedCurrent(); }}>${t("Archive")}</button>
             <button ?disabled=${unreadSelectedSessions.length === 0} @click=${() => { this.markSelectedCurrentRead(); }}>Mark read</button>
           </div>
         </div>
@@ -432,7 +434,7 @@ export class SessionList extends LitElement implements KeyboardNavigableSection 
         <div class="bulk-row selecting">
           ${this.renderSelectionControls("archived")}
           <div class="bulk-actions">
-            <button class="danger" title="Permanently delete selected archived sessions" ?disabled=${selectedSessions.length === 0} @click=${() => { this.confirmDeleteSelectedArchived(); }}>Delete</button>
+            <button class="danger" title=${t("Permanently delete selected archived sessions")} ?disabled=${selectedSessions.length === 0} @click=${() => { this.confirmDeleteSelectedArchived(); }}>Delete</button>
           </div>
         </div>
       </div>
@@ -486,7 +488,7 @@ export class SessionList extends LitElement implements KeyboardNavigableSection 
           ${this.renderActivity(indicatorKind, unread)}
         </div>
         <div class="action-menu">
-          <button class="action-menu-toggle" title="Session actions" @click=${(event: MouseEvent) => { event.stopPropagation(); this.toggleMenu(session.id, event.currentTarget); }}>⋯</button>
+          <button class="action-menu-toggle" title=${t("Session actions")} @click=${(event: MouseEvent) => { event.stopPropagation(); this.toggleMenu(session.id, event.currentTarget); }}>⋯</button>
         </div>
       </div>
       ${agentChildCount > 0 ? html`<button class="agent-subsession-toggle" style=${`--agent-offset:${String(agentOffset)}px`} aria-expanded=${String(this.expandedAgentParents.has(session.id))} @click=${() => { this.toggleAgentParent(session.id); }}>${this.expandedAgentParents.has(session.id) ? "▾" : "▸"} Agent subsessions (${agentChildCount})${!this.expandedAgentParents.has(session.id) && agentAttention !== undefined ? renderActionActivityIndicator(agentAttention.kind, agentAttention.kind === "sending" ? "Sending subsession message" : "Agent subsessions active", agentAttention.unread ? "Unread subsession activity" : undefined) : null}</button>` : null}
@@ -514,19 +516,19 @@ export class SessionList extends LitElement implements KeyboardNavigableSection 
         ${this.renderPinActions(row)}
         ${session.archived === true
           ? html`
-            <button title="Restore session" @click=${() => { this.openMenuSessionId = undefined; this.onRestore?.(session); }}>Restore</button>
-            <button class="danger" title="Permanently delete archived session" @click=${() => { this.openMenuSessionId = undefined; this.confirmDeleteArchived(session); }}>Delete archived session</button>
+            <button title=${t("Restore session")} @click=${() => { this.openMenuSessionId = undefined; this.onRestore?.(session); }}>${t("Restore")}</button>
+            <button class="danger" title=${t("Permanently delete archived session")} @click=${() => { this.openMenuSessionId = undefined; this.confirmDeleteArchived(session); }}>${t("Delete archived session")}</button>
           `
           : canDeleteTransient
-            ? html`<button title="Delete transient new session" @click=${() => { this.openMenuSessionId = undefined; this.onDelete?.(session); }}>Delete</button>`
+            ? html`<button title=${t("Delete transient new session")} @click=${() => { this.openMenuSessionId = undefined; this.onDelete?.(session); }}>${t("Delete")}</button>`
             : html`
-              ${this.unreadSessionIds.has(session.id) ? html`<button title="Mark session as read" @click=${() => { this.openMenuSessionId = undefined; this.onMarkRead?.(session); }}>Mark as read</button>` : null}
+              ${this.unreadSessionIds.has(session.id) ? html`<button title=${t("Mark session as read")} @click=${() => { this.openMenuSessionId = undefined; this.onMarkRead?.(session); }}>${t("Mark as read")}</button>` : null}
               ${canArchive ? html`
-                <button title="Archive session" @click=${() => { this.openMenuSessionId = undefined; this.onArchive?.(session); }}>Archive</button>
-                ${descendantCount > 0 ? html`<button title="Archive this session and its descendants" @click=${() => { this.openMenuSessionId = undefined; this.confirmArchiveWithDescendants(session, descendantCount); }}>Archive with descendants (${descendantCount})</button>` : null}
+                <button title=${t("Archive session")} @click=${() => { this.openMenuSessionId = undefined; this.onArchive?.(session); }}>${t("Archive")}</button>
+                ${descendantCount > 0 ? html`<button title=${t("Archive this session and its descendants")} @click=${() => { this.openMenuSessionId = undefined; this.confirmArchiveWithDescendants(session, descendantCount); }}>${t("Archive with descendants ({count})", { count: descendantCount })}</button>` : null}
               ` : null}
-              ${session.parentSessionPath !== undefined ? html`<button title="Detach from parent" @click=${() => { this.openMenuSessionId = undefined; this.onDetachParent?.(session); }}>Detach from parent</button>` : null}
-              ${canArchive ? html`<button title=${isWorking ? "Stop current session activity before reloading from disk" : "Reload session from disk without refreshing Pi runtime resources"} ?disabled=${isWorking} @click=${() => { this.openMenuSessionId = undefined; this.onReload?.(session); }}>Reload from disk</button>` : null}
+              ${session.parentSessionPath !== undefined ? html`<button title=${t("Detach from parent")} @click=${() => { this.openMenuSessionId = undefined; this.onDetachParent?.(session); }}>${t("Detach from parent")}</button>` : null}
+              ${canArchive ? html`<button title=${isWorking ? t("Stop current session activity before reloading from disk") : t("Reload session from disk without refreshing Pi runtime resources")} ?disabled=${isWorking} @click=${() => { this.openMenuSessionId = undefined; this.onReload?.(session); }}>${t("Reload from disk")}</button>` : null}
             `}
       </div>
     `;
@@ -740,7 +742,7 @@ export class SessionList extends LitElement implements KeyboardNavigableSection 
   }
 
   private renderActivity(kind: ActivityIndicatorKind | undefined, unread: boolean) {
-    const label = kind === "sending" ? "Sending message" : "Session active";
+    const label = kind === "sending" ? t("Sending message") : t("Session active");
     return renderActionActivityIndicator(kind, label, unread ? "Unread session activity" : undefined);
   }
 

@@ -1,4 +1,5 @@
-import { LitElement, css, html, nothing, type TemplateResult } from "lit";
+import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
+import { css, html, nothing, type TemplateResult } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { deepActiveElement, focusElement, isHiddenOrInertInComposedTree, registerRenderedModal, type RenderedModalRegistration } from "./modalLayerRegistry";
 
@@ -23,7 +24,7 @@ const FOCUSABLE_SELECTOR = "button, input, select, textarea, a[href], [tabindex]
  * shell through the `--modal-surface-*` custom properties in `styles`.
  */
 @customElement("modal-surface")
-export class ModalSurface extends LitElement {
+export class ModalSurface extends LocalizedLitElement {
   /** Called when Escape or a backdrop press requests closing. Not called while `busy`. */
   @property({ attribute: false }) onClose?: () => void;
   /**

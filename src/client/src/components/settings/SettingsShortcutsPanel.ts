@@ -1,4 +1,6 @@
-import { css, html, LitElement, type PropertyValues, type TemplateResult } from "lit";
+import { LocalizedLitElement } from "../../i18n/LocalizedLitElement";
+import { t } from "../../i18n/i18n";
+import { css, html, type PropertyValues, type TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import type { AppAction } from "../../actions";
 import type { PiWebConfigResponse, PiWebConfigValues, PiWebShortcutConfig } from "../../api";
@@ -14,7 +16,7 @@ function renderShortcutsDescription(): TemplateResult {
 }
 
 @customElement("settings-shortcuts-panel")
-export class SettingsShortcutsPanel extends LitElement {
+export class SettingsShortcutsPanel extends LocalizedLitElement {
   @property({ attribute: false }) actions: AppAction[] = [];
   @property({ attribute: false }) configResponse: PiWebConfigResponse | undefined;
   @property({ type: Boolean }) loading = false;
@@ -80,9 +82,9 @@ export class SettingsShortcutsPanel extends LitElement {
       >
         ${this.configResponse === undefined && this.loading ? html`<div class="loading-card">Loading shortcuts…</div>` : html`
           <div class="config-path-card">
-            <span>Config file</span>
+            <span>${t("Config file")}</span>
             <code>${this.configResponse?.path ?? "Unknown"}</code>
-            <small>Shortcut overrides are saved under <code>shortcuts</code>. A value of <code>null</code> disables the action shortcut.</small>
+            <small>${t("Shortcut overrides are saved under")} <code>shortcuts</code>. A value of <code>null</code> disables the action shortcut.</small>
           </div>
           <section class="shortcut-group">
             <h3>Send behavior</h3>
@@ -144,7 +146,7 @@ export class SettingsShortcutsPanel extends LitElement {
         </div>
         <div class="shortcut-editor">
           <div class="shortcut-status">
-            ${previewShortcut !== undefined && previewShortcut !== "" ? html`<kbd>${formatShortcut(previewShortcut)}</kbd>` : html`<span class="unassigned">${state === "disabled" ? "Disabled" : "Unassigned"}</span>`}
+            ${previewShortcut !== undefined && previewShortcut !== "" ? html`<kbd>${formatShortcut(previewShortcut)}</kbd>` : html`<span class="unassigned">${state === "disabled" ? t("Disabled") : t("Unassigned")}</span>`}
             <small class=${displayState}>${shortcutStateLabel(displayState)}${hasDraft ? " · Unsaved" : ""}</small>
             ${conflictLabel === undefined ? null : html`<small class=${shortcutConflictClass(resolution)}>${conflictLabel}</small>`}
           </div>
@@ -165,7 +167,7 @@ export class SettingsShortcutsPanel extends LitElement {
           ${recordingHint !== "" ? html`<small class="recording-hint">${recordingHint}</small>` : null}
           <div class="shortcut-actions">
             <button class="primary" ?disabled=${this.loading || this.saving || !hasDraft || inputText.trim() === ""} @click=${() => { void this.saveShortcut(action); }}>Save</button>
-            <button ?disabled=${this.loading || this.saving} @click=${() => { void this.toggleRecording(action.id); }}>${this.recording?.actionId === action.id ? "Cancel recording" : "Record"}</button>
+            <button ?disabled=${this.loading || this.saving} @click=${() => { void this.toggleRecording(action.id); }}>${this.recording?.actionId === action.id ? t("Cancel recording") : t("Record")}</button>
             <button ?disabled=${this.loading || this.saving || configured === null} @click=${() => { void this.setShortcutNone(action); }}>None</button>
             <button ?disabled=${this.loading || this.saving || !hasConfiguredShortcut} @click=${() => { void this.resetShortcut(action); }}>Reset</button>
           </div>
@@ -422,10 +424,10 @@ function shortcutState(action: AppAction, shortcuts: PiWebShortcutConfig | undef
 
 function shortcutStateLabel(state: ShortcutState): string {
   switch (state) {
-    case "default": return "Default";
-    case "custom": return "Custom";
-    case "disabled": return "Disabled";
-    case "unassigned": return "No default";
+    case "default": return t("Default");
+    case "custom": return t("Custom");
+    case "disabled": return t("Disabled");
+    case "unassigned": return t("No default");
   }
 }
 

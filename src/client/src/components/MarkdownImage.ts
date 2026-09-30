@@ -1,4 +1,5 @@
-import { LitElement, css, html, type PropertyValues } from "lit";
+import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
+import { css, html, type PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import type { ImageDimensions } from "../../../shared/sessionMedia";
 import { readMarkdownImageDimensions, rememberMarkdownImageDimensions } from "../formatting/markdownImageDimensions";
@@ -9,7 +10,7 @@ const shownImageMemory = new TransientChoiceMemory<true>();
 
 /** An outside-workspace URL stays inert until the user chooses to load it. */
 @customElement("pi-web-markdown-image")
-export class MarkdownImage extends LitElement {
+export class MarkdownImage extends LocalizedLitElement {
   @property({ attribute: "preview-url" }) previewUrl = "";
   @property() path = "";
   @property() description = "";

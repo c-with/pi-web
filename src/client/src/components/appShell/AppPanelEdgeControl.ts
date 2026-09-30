@@ -1,4 +1,5 @@
-import { LitElement, css, html, nothing } from "lit";
+import { LocalizedLitElement } from "../../i18n/LocalizedLitElement";
+import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { clampPanelWidth, panelResizeConstraints, panelWidthFromDrag, panelWidthFromKeyboard, type PanelResizeConstraints, type ResizablePanelSide } from "../../appShell/panelResizeController";
 
@@ -17,7 +18,7 @@ const DOUBLE_TAP_RESET_MS = 420;
 const TAP_MOVE_TOLERANCE_PX = 4;
 
 @customElement("app-panel-edge-control")
-export class AppPanelEdgeControl extends LitElement {
+export class AppPanelEdgeControl extends LocalizedLitElement {
   @property({ reflect: true }) side: PanelEdgeSide = "navigation";
   @property({ type: Boolean, reflect: true }) collapsed = false;
   @property({ type: Boolean }) resizable = false;

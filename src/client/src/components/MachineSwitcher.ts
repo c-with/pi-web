@@ -1,4 +1,6 @@
-import { LitElement, css, html, type PropertyValues, type TemplateResult } from "lit";
+import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
+import { t } from "../i18n/i18n";
+import { css, html, type PropertyValues, type TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import type { Machine, MachineHealth, MachineStatus } from "../api";
 import type { MachineStatusSnapshot } from "../../../shared/machineStatus";
@@ -9,7 +11,7 @@ import { canRemoveMachine } from "./MachineList";
 import type { KeyboardNavigableSection } from "./navigationFocus";
 
 @customElement("machine-switcher")
-export class MachineSwitcher extends LitElement implements KeyboardNavigableSection {
+export class MachineSwitcher extends LocalizedLitElement implements KeyboardNavigableSection {
   @property({ attribute: false }) machines: Machine[] = [];
   @property({ attribute: false }) selected?: Machine;
   /** PWA display mode: the single-machine identity bubble only shows there. */
@@ -77,7 +79,7 @@ export class MachineSwitcher extends LitElement implements KeyboardNavigableSect
           ${this.renderMachineIcon(selected)}
           ${this.renderActivity(selected)}
           <span class="machine-switcher-text">
-            <span class="machine-switcher-kicker">Machine</span>
+            <span class="machine-switcher-kicker">${t("Machine")}</span>
             <span class="machine-switcher-label">${label}</span>
           </span>
           <span class=${`machine-status ${status}`}>${machineStatusLabel(status)}</span>
@@ -115,7 +117,7 @@ export class MachineSwitcher extends LitElement implements KeyboardNavigableSect
             <button
               type="button"
               class="machine-option-actions-toggle"
-              title="Machine actions"
+              title=${t("Machine actions")}
               aria-label=${`Actions for ${machine.name}`}
               aria-expanded=${String(actionsOpen)}
               @click=${(event: MouseEvent) => { event.stopPropagation(); this.toggleActionsMenu(machine.id, event.currentTarget); }}

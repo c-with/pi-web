@@ -1,4 +1,6 @@
-import { LitElement, html, type PropertyValues } from "lit";
+import { LocalizedLitElement } from "../i18n/LocalizedLitElement";
+import { t } from "../i18n/i18n";
+import { html, type PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 import type { Project } from "../api";
@@ -10,7 +12,7 @@ import { activateSelectableRow, focusSelectedOrFirstSelectableRow, handleSelecta
 import { listStyles } from "./shared";
 
 @customElement("project-list")
-export class ProjectList extends LitElement implements KeyboardNavigableSection {
+export class ProjectList extends LocalizedLitElement implements KeyboardNavigableSection {
   @property({ attribute: false }) projects: Project[] = [];
   @property({ attribute: false }) selected?: Project;
   /** Status tree of the machine these projects belong to; absent means no indicators. */
@@ -92,10 +94,10 @@ export class ProjectList extends LitElement implements KeyboardNavigableSection 
                   ${this.openMenuProjectId === project.id ? html`
                     <div class="action-menu-panel" style=${this.menuStyle} @click=${(event: MouseEvent) => { event.stopPropagation(); }}>
                       ${this.onMove === undefined ? null : html`
-                        <button data-move ?disabled=${index === 0} @click=${() => { this.onMove?.(project, -1); }}>Move up</button>
-                        <button data-move ?disabled=${index === this.projects.length - 1} @click=${() => { this.onMove?.(project, 1); }}>Move down</button>
+                        <button data-move ?disabled=${index === 0} @click=${() => { this.onMove?.(project, -1); }}>${t("Move up")}</button>
+                        <button data-move ?disabled=${index === this.projects.length - 1} @click=${() => { this.onMove?.(project, 1); }}>${t("Move down")}</button>
                       `}
-                      <button title="Close project" @click=${() => { this.close(project); }}>Close</button>
+                      <button title=${t("Close project")} @click=${() => { this.close(project); }}>${t("Close")}</button>
                     </div>
                   ` : null}
                 </div>
@@ -117,7 +119,7 @@ export class ProjectList extends LitElement implements KeyboardNavigableSection 
   }
 
   private renderHeading() {
-    if (!this.collapsible) return html`<span>Projects</span>`;
+    if (!this.collapsible) return html`<span>${t("Projects")}</span>`;
     const selectedSummary = this.selected?.name ?? "No project selected";
     const selectedTitle = this.selected?.path ?? selectedSummary;
     return html`<button class="section-toggle" aria-expanded=${String(!this.collapsed)} @click=${() => { this.onToggleCollapsed?.(); }}><span class="section-title"><span class="section-name">${this.collapsed ? "▸" : "▾"} Projects</span>${this.collapsed ? html`<small class="section-selected" title=${selectedTitle}>${selectedSummary}</small>` : null}</span><small class="section-count">${this.projects.length}</small></button>`;
