@@ -44,19 +44,19 @@ export class ActionPalette extends LocalizedLitElement {
             <button
               class=${`${index === this.selectedIndex ? "selected" : ""} ${action.enabled === false ? "disabled" : ""}`}
               ?disabled=${action.enabled === false}
-              title=${action.disabledReason ?? action.title}
+              title=${t(action.disabledReason ?? action.title)}
               aria-current=${index === this.selectedIndex ? "true" : nothing}
               ${scrollWhenSelected(index === this.selectedIndex, action.id)}
               @focus=${() => { this.selectedIndex = index; }}
               @click=${() => { this.run(action); }}
             >
               <span class="main">
-                <strong>${action.title}</strong>
-                ${action.description !== undefined && action.description !== "" ? html`<small>${action.description}</small>` : null}
-                ${action.enabled === false && action.disabledReason !== undefined ? html`<small class="disabled-reason">${action.disabledReason}</small>` : null}
+                <strong>${t(action.title)}</strong>
+                ${action.description !== undefined && action.description !== "" ? html`<small>${t(action.description)}</small>` : null}
+                ${action.enabled === false && action.disabledReason !== undefined ? html`<small class="disabled-reason">${t(action.disabledReason)}</small>` : null}
               </span>
               ${action.shortcut !== undefined ? html`<kbd>${formatShortcut(action.shortcut)}</kbd>` : null}
-              ${action.group !== undefined && action.group !== "" ? html`<small class="group">${action.group}</small>` : null}
+              ${action.group !== undefined && action.group !== "" ? html`<small class="group">${t(action.group)}</small>` : null}
             </button>
           `)}
         </div>
@@ -118,7 +118,7 @@ export function filterActionPaletteActions(actions: readonly AppAction[], queryT
     .filter((action) => action.enabled !== false || action.disabledReason !== undefined)
     .filter((action) => {
       if (query === "") return true;
-      const haystack = [action.title, action.description ?? "", action.disabledReason ?? "", action.group ?? "", action.shortcut ?? ""].join(" ").toLowerCase();
+      const haystack = [t(action.title), t(action.description ?? ""), t(action.disabledReason ?? ""), t(action.group ?? ""), action.shortcut ?? ""].join(" ").toLowerCase();
       return haystack.includes(query);
     });
 }

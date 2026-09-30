@@ -73,9 +73,9 @@ export class SettingsShortcutsPanel extends LocalizedLitElement {
     const shortcutResolutions = this.shortcutResolutions();
     return html`
       <settings-panel-frame
-        heading="Keyboard shortcuts"
+        heading=${t("Keyboard shortcuts")}
         .description=${renderShortcutsDescription()}
-        actionLabel="Reload"
+        actionLabel=${t("Reload")}
         .actionDisabled=${this.loading}
         .notices=${this.panelNotices()}
         .onAction=${this.onReload}
@@ -139,10 +139,10 @@ export class SettingsShortcutsPanel extends LocalizedLitElement {
     return html`
       <article class=${shortcutRowClass(resolution)}>
         <div class="shortcut-main">
-          <strong>${action.title}</strong>
-          ${action.description !== undefined && action.description !== "" ? html`<small>${action.description}</small>` : null}
+          <strong>${t(action.title)}</strong>
+          ${action.description !== undefined && action.description !== "" ? html`<small>${t(action.description)}</small>` : null}
           <small class="shortcut-id">${action.id}</small>
-          <small>${action.shortcut !== undefined && action.shortcut !== "" ? html`Default: <kbd>${formatShortcut(action.shortcut)}</kbd>` : "No default shortcut"}</small>
+          <small>${action.shortcut !== undefined && action.shortcut !== "" ? html`${t("Default:")} <kbd>${formatShortcut(action.shortcut)}</kbd>` : t("No default shortcut")}</small>
         </div>
         <div class="shortcut-editor">
           <div class="shortcut-status">

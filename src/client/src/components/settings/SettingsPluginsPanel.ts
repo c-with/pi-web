@@ -28,10 +28,10 @@ export class SettingsPluginsPanel extends LocalizedLitElement {
     const hasPluginResponse = this.pluginsResponse !== undefined;
     return html`
       <settings-panel-frame
-        heading="PI WEB plugins"
+        heading=${t("PI WEB plugins")}
         .description=${pluginsDescription(this.targetLabel)}
-        actionLabel="Reload"
-        actionTitle=${`Reload PI WEB plugins from ${this.targetLabel}`}
+        actionLabel=${t("Reload")}
+        actionTitle=${t("Reload PI WEB plugins from {target}", { target: this.targetLabel })}
         .actionDisabled=${this.loading}
         .notices=${this.panelNotices(plugins.length > 0)}
         .onAction=${this.onReload}
@@ -45,7 +45,7 @@ export class SettingsPluginsPanel extends LocalizedLitElement {
     const notices: SettingsNotice[] = [];
     if (this.error !== "") notices.push({ type: "error", content: this.error });
     if (this.shouldShowConfigUnavailableNotice(showTrustedCodeWarning)) {
-      notices.push({ type: "availability", content: "Configuration is unavailable. Reload to try again before changing plugin enablement." });
+      notices.push({ type: "availability", content: t("Configuration is unavailable. Reload to try again before changing plugin enablement.") });
     }
     if (this.savedMessage !== "") notices.push({ type: "success", content: this.savedNotice() });
 
@@ -53,39 +53,39 @@ export class SettingsPluginsPanel extends LocalizedLitElement {
     if (runtime?.status === "unavailable") {
       notices.push({
         type: "availability",
-        title: "Active server-plugin state unavailable",
-        content: html`Desired config remains editable, but PI WEB cannot verify the sessiond snapshot. ${runtime.message ?? "Restart or reconnect sessiond, then reload."}`,
+        title: t("Active server-plugin state unavailable"),
+        content: html`${t("Desired config remains editable, but PI WEB cannot verify the sessiond snapshot.")} ${runtime.message ?? t("Restart or reconnect sessiond, then reload.")}`,
       });
     } else if (runtime?.status === "incompatible") {
       notices.push({
         type: "error",
-        title: "Plugin lifecycle version mismatch",
-        content: html`${runtime.message ?? "The web process and session daemon do not support the same plugin lifecycle protocol."} Update and restart both components before loading server-backed browser plugins.`,
+        title: t("Plugin lifecycle version mismatch"),
+        content: html`${runtime.message ?? t("The web process and session daemon do not support the same plugin lifecycle protocol.")} ${t("Update and restart both components before loading server-backed browser plugins.")}`,
       });
     }
     if (runtime?.safeStart !== undefined) {
       notices.push({
         type: "warning",
-        title: "Server-plugin safe mode active",
+        title: t("Server-plugin safe mode active"),
         content: runtime.safeStart === "bundled-only"
-          ? html`Only bundled server plugins were imported. Clear safe mode with <code>${runtime.recovery.clearSafeStart}</code>.`
-          : html`No server plugins were imported; Terminal is unavailable and the kernel folder workspace remains available for diagnosis. Clear safe mode with <code>${runtime.recovery.clearSafeStart}</code>.`,
+          ? html`${t("Only bundled server plugins were imported. Clear safe mode with")} <code>${runtime.recovery.clearSafeStart}</code>${t(".")}`
+          : html`${t("No server plugins were imported; Terminal is unavailable and the kernel folder workspace remains available for diagnosis. Clear safe mode with")} <code>${runtime.recovery.clearSafeStart}</code>${t(".")}`,
       });
     }
     if (runtime?.desiredSafeStart !== undefined && runtime.desiredSafeStart !== (runtime.safeStart ?? "off")) {
       notices.push({
         type: "warning",
-        title: "Safe-mode restart pending",
+        title: t("Safe-mode restart pending"),
         content: runtime.desiredSafeStart === "off"
-          ? "Safe start is cleared in offline config but remains active until sessiond restarts."
-          : `Offline config requests ${runtime.desiredSafeStart} safe start. It takes effect before plugin import on the next sessiond restart.`,
+          ? t("Safe start is cleared in offline config but remains active until sessiond restarts.")
+          : t("Offline config requests {mode} safe start. It takes effect before plugin import on the next sessiond restart.", { mode: runtime.desiredSafeStart }),
       });
     }
     if (runtime?.restartRequired === true) {
       notices.push({
         type: "warning",
-        title: "Session-daemon restart required",
-        content: "Desired plugin config or package revisions differ from sessiond's active startup snapshot. Restarting sessiond may interrupt active sessions.",
+        title: t("Session-daemon restart required"),
+        content: t("Desired plugin config or package revisions differ from sessiond's active startup snapshot. Restarting sessiond may interrupt active sessions."),
       });
     }
     for (const diagnostic of this.pluginsResponse?.diagnostics ?? []) {
@@ -106,9 +106,9 @@ export class SettingsPluginsPanel extends LocalizedLitElement {
 
   private savedNotice(): string {
     if (this.pluginsResponse?.serverRuntime.status !== "available" || this.pluginsResponse.serverRuntime.restartRequired) {
-      return `${this.savedMessage} Restart the session daemon to apply server-plugin changes; browser-only changes apply after reloading this tab.`;
+      return `${this.savedMessage} ${t("Restart the session daemon to apply server-plugin changes; browser-only changes apply after reloading this tab.")}`;
     }
-    return `${this.savedMessage} Reload the browser tab to apply browser-only plugin changes.`;
+    return `${this.savedMessage} ${t("Reload the browser tab to apply browser-only plugin changes.")}`;
   }
 
   private shouldShowConfigUnavailableNotice(hasLoadedPlugins: boolean): boolean {
@@ -297,5 +297,5 @@ function healthTone(status: NonNullable<NonNullable<PiWebPluginInfo["server"]>["
 }
 
 function pluginsDescription(targetLabel: string): TemplateResult {
-  return html`Compare desired plugin config with the active sessiond startup snapshot on <strong>${targetLabel}</strong>. This is separate from installing Pi packages.`;
+  return html`${t("Compare desired plugin config with the active sessiond startup snapshot on")} <strong>${targetLabel}</strong>${t(". This is separate from installing Pi packages.")}`;
 }

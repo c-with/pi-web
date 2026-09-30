@@ -2282,29 +2282,29 @@ export class PiWebApp extends LocalizedLitElement {
     if (project === undefined) {
       return this.state.projects.length === 0
         ? {
-            title: "No projects yet",
-            body: "Use Actions → Add Project to add a folder. Workspace tools will appear here after you choose a workspace.",
+            title: t("No projects yet"),
+            body: t("Use Actions → Add Project to add a folder. Workspace tools will appear here after you choose a workspace."),
           }
         : {
-            title: "Select a project",
-            body: "Choose a project from the sidebar, then select a workspace to use its tools.",
+            title: t("Select a project"),
+            body: t("Choose a project from the sidebar, then select a workspace to use its tools."),
           };
     }
     if (this.state.isLoadingWorkspaces) {
       return {
-        title: "Loading workspaces…",
-        body: `Preparing workspace tools for ${project.name}.`,
+        title: t("Loading workspaces…"),
+        body: t("Preparing workspace tools for {project}.", { project: project.name }),
       };
     }
     if (this.state.workspaces.length === 0) {
       return {
-        title: "No workspaces found",
-        body: `${project.name} does not have any available workspaces. Try selecting the project again or re-adding it.`,
+        title: t("No workspaces found"),
+        body: t("{project} does not have any available workspaces. Try selecting the project again or re-adding it.", { project: project.name }),
       };
     }
     return {
-      title: "Select a workspace",
-      body: `Choose a workspace in ${project.name} to use its tools.`,
+      title: t("Select a workspace"),
+      body: t("Choose a workspace in {project} to use its tools.", { project: project.name }),
     };
   }
 

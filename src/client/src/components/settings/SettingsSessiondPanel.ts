@@ -31,9 +31,9 @@ export class SettingsSessiondPanel extends LocalizedLitElement {
     const effectiveAskUser = config?.effectiveConfig.askUser === true;
     return html`
       <settings-panel-frame
-        heading="Session daemon"
+        heading=${t("Session daemon")}
         .description=${sessiondDescription(this.targetLabel)}
-        actionLabel="Reload"
+        actionLabel=${t("Reload")}
         .actionDisabled=${this.loading}
         .notices=${this.panelNotices()}
         .onAction=${this.onReload}
@@ -159,7 +159,7 @@ export class SettingsSessiondPanel extends LocalizedLitElement {
 }
 
 export function sessiondDescription(targetLabel: string): string {
-  return `Agent tool capabilities for sessions on ${targetLabel}. Changes are saved immediately but only take effect after the session daemon on that machine restarts.`;
+  return t("Agent tool capabilities for sessions on {target}. Changes are saved immediately but only take effect after the session daemon on that machine restarts.", { target: targetLabel });
 }
 
 export interface SessiondPanelNoticeContext {

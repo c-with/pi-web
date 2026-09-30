@@ -29,10 +29,10 @@ export class SettingsPackagesPanel extends LocalizedLitElement {
     const showPackageControls = this.packagesResponse !== undefined;
     return html`
       <settings-panel-frame
-        heading="Pi packages"
+        heading=${t("Pi packages")}
         .description=${packagesDescription(targetLabel)}
-        actionLabel="Reload"
-        actionTitle=${`Reload Pi packages from ${targetLabel}`}
+        actionLabel=${t("Reload")}
+        actionTitle=${t("Reload Pi packages from {target}", { target: targetLabel })}
         .actionDisabled=${this.loading || this.isOperating}
         .notices=${this.panelNotices(showPackageControls)}
         .onAction=${this.onReload}
@@ -259,5 +259,5 @@ export class SettingsPackagesPanel extends LocalizedLitElement {
 }
 
 function packagesDescription(targetLabel: string): TemplateResult {
-  return html`Managing Pi packages on <strong>${targetLabel}</strong>. Install, remove, and update packages managed by Pi on the selected machine. Pi packages can provide extensions, skills, prompt templates, themes, context/system prompt files, and PI WEB browser plugins.`;
+  return html`${t("Managing Pi packages on")} <strong>${targetLabel}</strong>${t(". Install, remove, and update packages managed by Pi on the selected machine. Pi packages can provide extensions, skills, prompt templates, themes, context/system prompt files, and PI WEB browser plugins.")}`;
 }

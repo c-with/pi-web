@@ -237,10 +237,10 @@ export class ModelPicker extends LocalizedLitElement {
         class="toggle-all"
         ?disabled=${!this.modelScopeEditable || !plan.canApply || !plan.hasChanges || this.toggleAllPending || this.pendingToggles.size > 0}
         aria-describedby="model-scope-status"
-        title=${!this.modelScopeEditable ? "Workspace settings control model availability" : !plan.canApply ? "The current model is unavailable" : nothing}
+        title=${!this.modelScopeEditable ? t("Workspace settings control model availability") : !plan.canApply ? t("The current model is unavailable") : nothing}
         @click=${() => { this.requestToggleAll(); }}
       >${label}</button>
-      <span id="model-scope-status" class="scope-status" aria-live="polite">${this.membershipChangePending ? "Updating model availability" : !this.modelScopeEditable ? "Workspace settings control model availability" : !plan.canApply ? "The current model is unavailable" : nothing}</span>
+      <span id="model-scope-status" class="scope-status" aria-live="polite">${this.membershipChangePending ? t("Updating model availability") : !this.modelScopeEditable ? t("Workspace settings control model availability") : !plan.canApply ? t("The current model is unavailable") : nothing}</span>
     `;
   }
 
@@ -311,7 +311,7 @@ export class ModelPicker extends LocalizedLitElement {
           .checked=${entry.enabled}
           ?disabled=${membershipDisabled}
           aria-label=${membershipLabel}
-          title=${!this.modelScopeEditable ? "Workspace settings control model availability" : protectsCurrentModel ? "The current model must remain enabled" : nothing}
+          title=${!this.modelScopeEditable ? t("Workspace settings control model availability") : protectsCurrentModel ? t("The current model must remain enabled") : nothing}
           @focus=${() => { this.selectedIndex = index; }}
           @click=${(event: MouseEvent) => { this.handleEnableToggleClick(entry, event); }}
         />
