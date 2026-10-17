@@ -80,7 +80,7 @@ describe("composable normal chat", () => {
     const body = required(group, ".group-body");
     const image = required(group, "pi-web-transcript-image");
     expect(group.open).toBe(false);
-    expect(body.textContent).toContain("thinking");
+    expect(body.textContent).toContain("Thinking");
     const render = vi.spyOn(view, "render");
     group.open = true; group.dispatchEvent(new Event("toggle"));
     group.open = false; group.dispatchEvent(new Event("toggle"));

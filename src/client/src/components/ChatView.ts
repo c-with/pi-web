@@ -762,7 +762,7 @@ export class ChatView extends LocalizedLitElement {
             <small>${section.detail}</small>
           </div>
           ${canClear ? html`
-            <button type="button" class="queued-clear-button" ?disabled=${this.queuedMessageActionPending} aria-label=${t("Clear queue")} title=${t("Clear queued messages without stopping active work")} @click=${this.handleClearServerQueue}>${renderTrashIcon()}</button>
+            <button type="button" class="queued-clear-button" ?disabled=${this.queuedMessageActionPending} aria-label=${t("Clear queue")} title=${t("Clear queued messages without stopping active work")} data-action="clear-queue" @click=${this.handleClearServerQueue}>${renderTrashIcon()}</button>
           ` : null}
         </div>
         ${unavailableReason === undefined ? nothing : html`<small role="status">${unavailableReason}</small>`}

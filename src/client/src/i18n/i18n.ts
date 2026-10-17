@@ -54,7 +54,8 @@ function readStoredLocale(): Locale | undefined {
 }
 
 function browserLocale(): Locale {
-  return navigator.language.toLowerCase().startsWith("zh") ? "zh-CN" : "en";
+  const language = typeof navigator === "undefined" ? undefined : navigator.language;
+  return language?.toLowerCase().startsWith("zh") === true ? "zh-CN" : "en";
 }
 
 function applyDocumentLanguage(nextLocale: Locale): void {
