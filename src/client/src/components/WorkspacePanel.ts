@@ -69,11 +69,6 @@ export class WorkspacePanel extends LocalizedLitElement {
       title: t("Select a workspace"),
       body: t("Choose a workspace to use its tools."),
     }, true);
-    const context = this.panelContext;
-    if (context === undefined) return this.renderEmptyState({
-      title: t("Workspace tools unavailable"),
-      body: t("Try selecting the workspace again."),
-    }, true);
     const visiblePanels = this.panels;
     // An unresolved route may leave a valid remembered tool, but its content is not displayed.
     const selectedPanel = this.error !== "" ? undefined

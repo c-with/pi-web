@@ -218,11 +218,7 @@ export class AskUserCard extends LocalizedLitElement {
 
   private renderRecord(outcome: AskUserOutcome): TemplateResult {
     const recordLabel = outcome.reason === "submitted"
-<<<<<<< HEAD
-      ? outcome.answeredCount === 0 ? "Questions skipped" : "Answers sent"
-=======
-      ? t("Answers sent")
->>>>>>> 526990dd (feat(i18n): extract remaining UI strings, complete zh-CN coverage)
+      ? outcome.answeredCount === 0 ? t("Questions skipped") : t("Answers sent")
       : outcome.reason === "superseded"
         ? t("Superseded")
         : t("Cancelled");

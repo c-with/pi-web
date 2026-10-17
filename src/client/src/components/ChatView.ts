@@ -762,11 +762,7 @@ export class ChatView extends LocalizedLitElement {
             <small>${section.detail}</small>
           </div>
           ${canClear ? html`
-<<<<<<< HEAD
-            <button type="button" class="queued-clear-button" ?disabled=${this.queuedMessageActionPending} aria-label="Clear queue" title="Clear queued messages without stopping active work" @click=${this.handleClearServerQueue}>${renderTrashIcon()}</button>
-=======
-            <button type="button" class="queued-clear-button" title=${t("Clear queued messages without stopping active work")} data-action="clear-queue" @click=${this.handleClearServerQueue}>${t("Clear queue")}</button>
->>>>>>> 526990dd (feat(i18n): extract remaining UI strings, complete zh-CN coverage)
+            <button type="button" class="queued-clear-button" ?disabled=${this.queuedMessageActionPending} aria-label=${t("Clear queue")} title=${t("Clear queued messages without stopping active work")} @click=${this.handleClearServerQueue}>${renderTrashIcon()}</button>
           ` : null}
         </div>
         ${unavailableReason === undefined ? nothing : html`<small role="status">${unavailableReason}</small>`}
@@ -885,13 +881,8 @@ export class ChatView extends LocalizedLitElement {
     if (this.loadingMore) return html`<div class="history-boundary"><span>${t("Loading earlier messages…")}</span>${range}</div>`;
     if (this.hasMore) return html`
       <div class="history-boundary">
-<<<<<<< HEAD
-        <button type="button" class="history-load-button" ?disabled=${this.loadMoreRequested} @click=${() => { this.requestLoadMore(); }}>Load earlier messages</button>
-        ${this.behaviors.automaticHistory ? html`<span>${t("Scroll up to load earlier messages")}</span>` : null}
-=======
         <button type="button" class="history-load-button" ?disabled=${this.loadMoreRequested} @click=${() => { this.requestLoadMore(); }}>${t("Load earlier messages")}</button>
-        <span>${t("Scroll up to load earlier messages")}</span>
->>>>>>> 526990dd (feat(i18n): extract remaining UI strings, complete zh-CN coverage)
+        ${this.behaviors.automaticHistory ? html`<span>${t("Scroll up to load earlier messages")}</span>` : null}
         ${range}
       </div>
     `;
@@ -990,7 +981,6 @@ export class ChatView extends LocalizedLitElement {
     const feedback = this.messageActionFeedback;
     return html`
       <div class="msg-actions" aria-label=${t("Message actions")}>
-<<<<<<< HEAD
         ${actions.map(({ action, enabled, ariaLabel }) => {
           const presentation = feedback?.machineId === this.machineId && feedback.sessionId === this.sessionId && feedback.key === key && feedback.actionId === action.id
             ? feedback.presentation : undefined;
@@ -998,16 +988,6 @@ export class ChatView extends LocalizedLitElement {
           return html`<button type="button" class="msg-action" title=${presentation?.title ?? action.title} aria-label=${presentation?.ariaLabel ?? presentation?.title ?? ariaLabel} ?disabled=${!enabled || pending} @click=${(event: MouseEvent) => { void this.actOnMessage(source, message, key, action, event); }}>${presentation?.icon ?? action.icon ?? action.title}</button>`;
         })}
         ${this.messageActionError?.machineId === this.machineId && this.messageActionError.sessionId === this.sessionId && this.messageActionError.key === key ? html`<span role="alert">${this.messageActionError.message}</span>` : null}
-=======
-        ${canNavigate ? html`
-          <button type="button" class="msg-action" title=${t("Clone session from this message")} aria-label=${t("Clone session from this message")} ?disabled=${this.messageActionsDisabled || this.messageActionPending} @click=${(event: MouseEvent) => { void this.actOnMessage(message, "fork", event); }}><span class="msg-fork-icon" aria-hidden="true">⑂</span></button>
-          <button type="button" class="msg-action" title=${t("Go back to this message")} aria-label=${t("Go back to this message")} ?disabled=${this.messageActionsDisabled || this.messageActionPending} @click=${(event: MouseEvent) => { void this.actOnMessage(message, "back", event); }}><svg aria-hidden="true" width="16" height="16" viewBox="-3 -3 30 30" fill="none" stroke="currentColor" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round"><path vector-effect="non-scaling-stroke" d="M4 5h11a6 6 0 0 1 0 12H4m5-5-5 5 5 5" /></svg></button>
-        ` : null}
-        ${canCopy ? html`<button type="button" class="msg-action" title=${copied ? t("Copied") : t("Copy message")} aria-label=${`${copied ? t("Copied") : "Copy"} ${message.role} message`} @click=${(event: MouseEvent) => { void this.copyMessage(message, key, event); }}>
-          <span aria-hidden="true">${copied ? "✓" : "⧉"}</span>
-        </button>` : null}
-        ${this.messageActionError?.sessionId === this.sessionId && this.messageActionError.entryId === message.entryId ? html`<span role="alert">${this.messageActionError.message}</span>` : null}
->>>>>>> 526990dd (feat(i18n): extract remaining UI strings, complete zh-CN coverage)
       </div>
     `;
   }
@@ -1079,19 +1059,13 @@ export class ChatView extends LocalizedLitElement {
 
   private renderPart(part: ChatPart, message: ChatLine, messageIndex: number, partIndex: number) {
     const intentKey = JSON.stringify([this.machineId, this.sessionId, message.entryId ?? messageIndex, partIndex]);
-<<<<<<< HEAD
     if (part.type === "text" || part.type === "thinking") {
       const text = part.displayText ?? part.text;
       if (text === "") return null;
-      if (part.type === "thinking") return html`<details class="part"><summary>thinking</summary><formatted-text .imagesEnabled=${this.behaviors.loadImages} .codeBlocks=${this.behaviors.codeBlocks} .intentKey=${intentKey} .contentRendering=${this.contentRendering} .machineId=${this.machineId} .workspaceContext=${this.workspaceContext} .text=${text}></formatted-text></details>`;
+      if (part.type === "thinking") return html`<details class="part"><summary>${t("Thinking")}</summary><formatted-text .imagesEnabled=${this.behaviors.loadImages} .codeBlocks=${this.behaviors.codeBlocks} .intentKey=${intentKey} .contentRendering=${this.contentRendering} .machineId=${this.machineId} .workspaceContext=${this.workspaceContext} .text=${text}></formatted-text></details>`;
       if (message.role === "bash") return html`<pre class="part shell-output">${text}</pre>`;
       return html`<formatted-text .imagesEnabled=${this.behaviors.loadImages} .codeBlocks=${this.behaviors.codeBlocks} .intentKey=${intentKey} class="part" .contentRendering=${this.contentRendering} .machineId=${this.machineId} .workspaceContext=${this.workspaceContext} .text=${text}></formatted-text>`;
     }
-=======
-    if (part.type === "text" && message.role === "bash") return html`<pre class="part shell-output">${part.text}</pre>`;
-    if (part.type === "text") return html`<formatted-text .intentKey=${intentKey} class="part" .contentRendering=${this.contentRendering} .machineId=${this.machineId} .workspaceContext=${this.workspaceContext} .text=${part.text}></formatted-text>`;
-    if (part.type === "thinking") return html`<details class="part"><summary>${t("Thinking")}</summary><formatted-text .intentKey=${intentKey} .contentRendering=${this.contentRendering} .machineId=${this.machineId} .workspaceContext=${this.workspaceContext} .text=${part.text}></formatted-text></details>`;
->>>>>>> 526990dd (feat(i18n): extract remaining UI strings, complete zh-CN coverage)
     if (part.type === "skillInvocation") return html`
       <details class="part skill-invocation">
         <summary><b>[skill]</b> ${part.name}</summary>
